@@ -145,6 +145,7 @@ export default function DestinationList() {
           </h2>
           <button
             onClick={handleAddDestination}
+            data-add-destination
             className={`flex items-center justify-center px-3 sm:px-4 py-2 rounded-lg border transition-colors w-full sm:w-auto ${
               darkMode 
                 ? 'bg-blue-600 hover:bg-blue-700 text-white border-blue-500' 
@@ -295,13 +296,13 @@ export default function DestinationList() {
                               <div className="flex items-start flex-1 min-w-0">
                                 <button
                                   onClick={() => handleToggleCompleted(activity)}
-                                  className={`w-5 h-5 rounded-full mr-3 mt-0.5 flex-shrink-0 flex items-center justify-center border-2 transition-colors ${
+                                  className={`w-5 h-4 sm:h-5 rounded-full mr-3 flex-shrink-0 flex items-center justify-center border-2 transition-colors ${
                                     activity.isCompleted
                                       ? 'bg-green-500 border-green-500 text-white'
                                       : darkMode ? 'border-gray-500 hover:border-gray-400' : 'border-gray-300 hover:border-gray-400'
                                   }`}
                                 >
-                                  {activity.isCompleted && <Check className="w-3 h-3" />}
+                                  {activity.isCompleted && <Check className="w-2 h-2" />}
                                 </button>
                                 
                                 <div className="min-w-0 flex-1">
@@ -370,7 +371,14 @@ export default function DestinationList() {
 
       {/* Modal d'ajout/édition de destination */}
       {showDestinationModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowDestinationModal(false);
+            }
+          }}
+        >
           <div className={`w-full sm:w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-xl ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} sm:border max-h-[90vh] sm:max-h-[80vh] overflow-y-auto`}>
             <div className="p-4 sm:p-6">
               {/* En-tête mobile */}

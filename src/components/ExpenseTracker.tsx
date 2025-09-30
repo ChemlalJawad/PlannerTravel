@@ -189,7 +189,14 @@ export default function ExpenseTracker() {
 
       {/* Formulaire d'ajout - Popup */}
       {showAddForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]">
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowAddForm(false);
+            }
+          }}
+        >
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl border dark:border-gray-700 w-full max-w-2xl max-h-[85vh] overflow-y-auto relative z-[61]">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">

@@ -326,7 +326,7 @@ export default function ActivityCalendar() {
                               {activity.title}
                             </span>
                             {activity.isCompleted && (
-                              <Check className="w-3 h-3" />
+                              <Check className="w-2 h-2" />
                             )}
                           </div>
                         </div>
@@ -403,7 +403,7 @@ export default function ActivityCalendar() {
                                     : 'bg-gray-100 text-gray-400 dark:bg-gray-700 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-600'
                                 }`}
                               >
-                                <Check className="w-4 h-4" />
+                                <Check className="w-3 h-3" />
                               </button>
                               
                               <h4 className={`font-medium text-lg ${categoryColors.text} ${
@@ -585,7 +585,14 @@ export default function ActivityCalendar() {
 
       {/* Modal d'ajout/modification d'activité */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60] p-4">
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60] p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowAddModal(false);
+            }
+          }}
+        >
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full max-h-[85vh] overflow-y-auto relative z-[61]">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">

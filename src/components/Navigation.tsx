@@ -50,6 +50,18 @@ export default function Navigation() {
     }, 100);
   };
 
+  const handleAddDestination = () => {
+    setActiveTab('destinations');
+    setShowAddMenu(false);
+    // Déclencher l'ouverture de la modale d'ajout de destination
+    setTimeout(() => {
+      const addDestinationButton = document.querySelector('[data-add-destination]') as HTMLButtonElement;
+      if (addDestinationButton) {
+        addDestinationButton.click();
+      }
+    }, 100);
+  };
+
   // Permet l'accès direct via URL pour DB Test
   const handleTabAccess = () => {
     const url = new URL(window.location.href);
@@ -202,6 +214,25 @@ export default function Navigation() {
                     <div className="font-medium">Nouvelle activité</div>
                     <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                       Planifier un événement
+                    </div>
+                  </div>
+                </button>
+
+                <button
+                  onClick={handleAddDestination}
+                  className={`w-full flex items-center space-x-3 p-3 rounded-xl transition-colors ${
+                    darkMode 
+                      ? 'hover:bg-gray-700 text-white' 
+                      : 'hover:bg-gray-50 text-gray-900'
+                  }`}
+                >
+                  <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center">
+                    <MapPin className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-medium">Nouvelle destination</div>
+                    <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      Ajouter un lieu
                     </div>
                   </div>
                 </button>
