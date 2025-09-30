@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calendar, MapPin, PieChart, Plus, DollarSign, Moon, Sun } from 'lucide-react';
+import { Calendar, MapPin, PieChart, Plus, DollarSign, Moon, Sun, Sparkles } from 'lucide-react';
 import { useDarkMode } from '../context/DarkModeContext';
 import Dashboard from './Dashboard';
 import DestinationList from './DestinationList';
@@ -9,8 +9,9 @@ import BudgetManager from './BudgetManager';
 import ExpenseTracker from './ExpenseTracker';
 import DatabaseSetup from './DatabaseSetup';
 import SyncStatus from './SyncStatus';
+import IdeasToVisit from './IdeasToVisit';
 
-type Tab = 'dashboard' | 'destinations' | 'calendar' | 'people' | 'budget' | 'expenses' | 'dbtest';
+type Tab = 'dashboard' | 'destinations' | 'calendar' | 'people' | 'budget' | 'expenses' | 'ideas' | 'dbtest';
 
 export default function Navigation() {
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
@@ -22,6 +23,7 @@ export default function Navigation() {
     { id: 'dashboard' as Tab, label: 'Accueil', icon: PieChart, color: 'from-blue-500 to-blue-600' },
     { id: 'destinations' as Tab, label: 'Lieux', icon: MapPin, color: 'from-emerald-500 to-emerald-600' },
     { id: 'calendar' as Tab, label: 'Planning', icon: Calendar, color: 'from-purple-500 to-purple-600' },
+    { id: 'ideas' as Tab, label: 'Idées', icon: Sparkles, color: 'from-pink-500 to-pink-600' },
     { id: 'budget' as Tab, label: 'Budget', icon: DollarSign, color: 'from-green-500 to-green-600' },
   ];
 
@@ -89,6 +91,8 @@ export default function Navigation() {
         return <BudgetManager />;
       case 'expenses':
         return <ExpenseTracker />;
+      case 'ideas':
+        return <IdeasToVisit />;
       case 'dbtest':
         return <DatabaseSetup />;
       default:
@@ -97,122 +101,156 @@ export default function Navigation() {
   };
 
   return (
-    <div className={`min-h-screen pb-20 md:pb-0 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+    <div className={`min-h-screen pb-24 md:pb-0 ${darkMode ? 'bg-[#0a0a0a]' : 'bg-white'}`}>
       {/* Indicateur de synchronisation */}
       <SyncStatus />
-      
-      {/* Header mobile simplifié */}
-      <header className={`shadow-sm border-b sticky top-0 z-30 md:hidden ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
-        <div className="px-4 py-3">
+
+      {/* Header mobile minimaliste */}
+      <header className={`backdrop-blur-xl border-b sticky top-0 z-30 md:hidden ${
+        darkMode
+          ? 'bg-[#0a0a0a]/90 border-[#1f1f1f]'
+          : 'bg-white/90 border-gray-100'
+      }`}>
+        <div className="px-6 py-5 safe-area-inset-top">
           <div className="flex items-center justify-between">
-            <h1 className={`text-lg font-bold text-center flex-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-              🌏 Chine & Japon
-            </h1>
+            <div>
+              <h1 className={`text-xl font-semibold tracking-tight ${darkMode ? 'text-gray-50' : 'text-black'}`}>
+                Voyage
+              </h1>
+              <p className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                Chine & Japon 2026
+              </p>
+            </div>
             {/* Toggle mode sombre mobile */}
             <button
               onClick={toggleDarkMode}
-              className={`p-2 rounded-lg transition-all duration-150 focus:outline-none focus:ring-2 ${
-                darkMode 
-                  ? 'bg-gray-700 text-gray-300 hover:bg-gray-600 focus:ring-gray-500' 
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200 focus:ring-gray-300'
+              className={`p-2 rounded-full transition-all duration-200 ${
+                darkMode
+                  ? 'hover:bg-[#1a1a1a]'
+                  : 'hover:bg-gray-100'
               }`}
               title={`Basculer en mode ${darkMode ? 'clair' : 'sombre'}`}
             >
-              {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              {darkMode ? <Sun className="w-5 h-5 text-gray-50" /> : <Moon className="w-5 h-5 text-black" />}
             </button>
           </div>
         </div>
       </header>
 
-      {/* Header desktop */}
-      <header className="hidden md:block bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-extrabold text-white tracking-wide drop-shadow-lg">
-                🌏 Voyage Chine & Japon
+      {/* Header desktop minimaliste */}
+      <header className={`hidden md:block border-b ${
+        darkMode ? 'bg-[#0a0a0a] border-[#1f1f1f]' : 'bg-white border-gray-100'
+      }`}>
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="flex justify-between items-center h-20">
+            <div>
+              <h1 className={`text-2xl font-semibold tracking-tight ${darkMode ? 'text-gray-50' : 'text-black'}`}>
+                Voyage
               </h1>
-              <div className="ml-8 flex items-center space-x-2">
-                {/* Toggle mode sombre global */}
-                <button
-                  onClick={toggleDarkMode}
-                  className="p-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-white/50"
-                  title={`Basculer en mode ${darkMode ? 'clair' : 'sombre'}`}
-                >
-                  {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                </button>
-                
-                {/* Onglets de navigation */}
-                {visibleTabs.map((tab) => {
-                  const Icon = tab.icon;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`inline-flex items-center px-4 py-2 rounded-lg transition-all duration-150 text-base font-semibold focus:outline-none focus:ring-2 focus:ring-white/50 shadow-sm ${
-                        activeTab === tab.id
-                          ? 'bg-white text-blue-700 shadow-lg'
-                          : 'bg-white/10 text-white hover:bg-white/20 hover:text-blue-100'
-                      }`}
-                    >
-                      <Icon className="w-5 h-5 mr-2" />
-                      {tab.label}
-                    </button>
-                  );
-                })}
-              </div>
+            </div>
+
+            <div className="flex items-center gap-1">
+              {/* Onglets de navigation minimalistes */}
+              {visibleTabs.map((tab) => {
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl font-medium transition-all duration-200 ${
+                      activeTab === tab.id
+                        ? darkMode
+                          ? 'bg-white text-black shadow-lg'
+                          : 'bg-black text-white shadow-lg'
+                        : darkMode
+                          ? 'text-gray-500 hover:text-gray-200 hover:bg-[#1a1a1a]'
+                          : 'text-gray-500 hover:text-black hover:bg-gray-50'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {tab.label}
+                  </button>
+                );
+              })}
+
+              <div className={`w-px h-6 mx-2 ${darkMode ? 'bg-[#2a2a2a]' : 'bg-gray-200'}`} />
+
+              {/* Toggle mode sombre global */}
+              <button
+                onClick={toggleDarkMode}
+                className={`p-2.5 rounded-full transition-all duration-200 ${
+                  darkMode
+                    ? 'hover:bg-[#1a1a1a]'
+                    : 'hover:bg-gray-100'
+                }`}
+                title={`Basculer en mode ${darkMode ? 'clair' : 'sombre'}`}
+              >
+                {darkMode ? <Sun className="w-4 h-4 text-gray-50" /> : <Moon className="w-4 h-4 text-black" />}
+              </button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Contenu principal avec padding mobile optimisé */}
-      <main className={`px-4 py-4 md:max-w-7xl md:mx-auto md:px-6 lg:px-8 md:py-8 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      {/* Contenu principal avec padding Revolut-style */}
+      <main className={`px-6 py-8 md:max-w-7xl md:mx-auto md:px-8 md:py-12 animate-fade-in ${
+        darkMode ? 'bg-[#0a0a0a]' : 'bg-white'
+      }`}>
         {renderContent()}
       </main>
 
-      {/* Tab bar mobile en bas - plus accessible avec le pouce */}
-      <nav className={`fixed bottom-0 left-0 right-0 border-t md:hidden z-40 ${
-        darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+      {/* Tab bar mobile minimaliste */}
+      <nav className={`fixed bottom-0 left-0 right-0 backdrop-blur-xl md:hidden z-40 border-t ${
+        darkMode ? 'bg-[#0a0a0a]/90 border-[#1f1f1f]' : 'bg-white/90 border-gray-100'
       }`}>
         <div className="relative">
-          {/* Menu d'ajout flottant */}
+          {/* Menu d'ajout minimaliste */}
           {showAddMenu && (
-            <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-50">
-              <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-2xl shadow-xl border ${darkMode ? 'border-gray-700' : 'border-gray-200'} p-2 min-w-[200px]`}>
+            <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 z-50 animate-scale-in">
+              <div className={`${
+                darkMode ? 'bg-[#141414]' : 'bg-white'
+              } rounded-3xl shadow-2xl border ${
+                darkMode ? 'border-[#1f1f1f]' : 'border-gray-100'
+              } p-2 min-w-[260px] backdrop-blur-xl ${
+                darkMode ? 'bg-[#141414]/95' : 'bg-white/95'
+              }`}>
                 <button
                   onClick={handleAddExpense}
-                  className={`w-full flex items-center space-x-3 p-3 rounded-xl transition-colors ${
-                    darkMode 
-                      ? 'hover:bg-gray-700 text-white' 
-                      : 'hover:bg-gray-50 text-gray-900'
+                  className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all active:scale-98 ${
+                    darkMode
+                      ? 'hover:bg-[#1a1a1a] text-gray-50'
+                      : 'hover:bg-gray-50 text-black'
                   }`}
                 >
-                  <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center">
-                    <DollarSign className="w-5 h-5 text-white" />
+                  <div className={`w-11 h-11 rounded-2xl flex items-center justify-center ${
+                    darkMode ? 'bg-[#1a1a1a]' : 'bg-gray-100'
+                  }`}>
+                    <DollarSign className="w-5 h-5" />
                   </div>
-                  <div className="text-left">
-                    <div className="font-medium">Nouvelle dépense</div>
-                    <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <div className="text-left flex-1">
+                    <div className="font-medium">Dépense</div>
+                    <div className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
                       Ajouter un coût
                     </div>
                   </div>
                 </button>
-                
+
                 <button
                   onClick={handleAddActivity}
-                  className={`w-full flex items-center space-x-3 p-3 rounded-xl transition-colors ${
-                    darkMode 
-                      ? 'hover:bg-gray-700 text-white' 
-                      : 'hover:bg-gray-50 text-gray-900'
+                  className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all active:scale-98 ${
+                    darkMode
+                      ? 'hover:bg-[#1a1a1a] text-gray-50'
+                      : 'hover:bg-gray-50 text-black'
                   }`}
                 >
-                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center">
-                    <Calendar className="w-5 h-5 text-white" />
+                  <div className={`w-11 h-11 rounded-2xl flex items-center justify-center ${
+                    darkMode ? 'bg-[#1a1a1a]' : 'bg-gray-100'
+                  }`}>
+                    <Calendar className="w-5 h-5" />
                   </div>
-                  <div className="text-left">
-                    <div className="font-medium">Nouvelle activité</div>
-                    <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <div className="text-left flex-1">
+                    <div className="font-medium">Activité</div>
+                    <div className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
                       Planifier un événement
                     </div>
                   </div>
@@ -220,18 +258,20 @@ export default function Navigation() {
 
                 <button
                   onClick={handleAddDestination}
-                  className={`w-full flex items-center space-x-3 p-3 rounded-xl transition-colors ${
-                    darkMode 
-                      ? 'hover:bg-gray-700 text-white' 
-                      : 'hover:bg-gray-50 text-gray-900'
+                  className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all active:scale-98 ${
+                    darkMode
+                      ? 'hover:bg-[#1a1a1a] text-gray-50'
+                      : 'hover:bg-gray-50 text-black'
                   }`}
                 >
-                  <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center">
-                    <MapPin className="w-5 h-5 text-white" />
+                  <div className={`w-11 h-11 rounded-2xl flex items-center justify-center ${
+                    darkMode ? 'bg-[#1a1a1a]' : 'bg-gray-100'
+                  }`}>
+                    <MapPin className="w-5 h-5" />
                   </div>
-                  <div className="text-left">
-                    <div className="font-medium">Nouvelle destination</div>
-                    <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <div className="text-left flex-1">
+                    <div className="font-medium">Destination</div>
+                    <div className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
                       Ajouter un lieu
                     </div>
                   </div>
@@ -248,33 +288,35 @@ export default function Navigation() {
             />
           )}
 
-          {/* Barre de navigation */}
-          <div className="flex items-center h-20 safe-area-inset-bottom relative">
-            {/* Onglets à gauche */}
-            <div className="flex-1 flex">
+          {/* Barre de navigation minimaliste */}
+          <div className="flex items-center h-20 safe-area-inset-bottom relative px-4">
+            {/* Onglets à gauche (2 onglets) */}
+            <div className="flex-1 flex gap-2">
               {visibleTabs.slice(0, 2).map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
-                
+
                 return (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex-1 flex flex-col items-center justify-center space-y-1 transition-all duration-200 active:scale-95 px-1 ${
-                      isActive 
-                        ? 'text-blue-600' 
-                        : darkMode ? 'text-gray-400 active:text-gray-300' : 'text-gray-400 active:text-gray-600'
-                    }`}
+                    className="flex-1 flex flex-col items-center justify-center gap-1 transition-all duration-200 active:scale-95 py-2"
                   >
-                    <div className={`p-2 rounded-xl transition-all duration-200 ${
-                      isActive 
-                        ? `bg-gradient-to-r ${tab.color} shadow-lg shadow-blue-500/25` 
-                        : darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    <div className={`p-2 rounded-2xl transition-all duration-200 ${
+                      isActive
+                        ? darkMode ? 'bg-white shadow-lg' : 'bg-black shadow-lg'
+                        : darkMode ? 'bg-[#1a1a1a]' : 'bg-gray-100'
                     }`}>
-                      <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-current'}`} />
+                      <Icon className={`w-5 h-5 ${
+                        isActive
+                          ? darkMode ? 'text-black' : 'text-white'
+                          : darkMode ? 'text-gray-500' : 'text-gray-400'
+                      }`} />
                     </div>
-                    <span className={`text-xs font-medium truncate max-w-full px-1 ${
-                      isActive ? 'text-blue-600' : darkMode ? 'text-gray-400' : 'text-gray-500'
+                    <span className={`text-xs font-medium truncate max-w-full ${
+                      isActive
+                        ? darkMode ? 'text-gray-50' : 'text-black'
+                        : darkMode ? 'text-gray-600' : 'text-gray-400'
                     }`}>
                       {tab.label}
                     </span>
@@ -283,43 +325,45 @@ export default function Navigation() {
               })}
             </div>
 
-            {/* Bouton central d'ajout */}
-            <div className="flex-shrink-0 px-4">
+            {/* Bouton central minimaliste */}
+            <div className="flex-shrink-0 px-4 -mt-8">
               <button
                 onClick={() => setShowAddMenu(!showAddMenu)}
-                className={`w-14 h-14 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg flex items-center justify-center transition-all duration-200 active:scale-95 ${
-                  showAddMenu ? 'rotate-45' : 'hover:shadow-xl'
-                }`}
+                className={`relative w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-200 active:scale-95 ${
+                  darkMode ? 'bg-white shadow-white/20' : 'bg-black shadow-black/20'
+                } ${showAddMenu ? 'rotate-45' : ''}`}
               >
-                <Plus className="w-7 h-7 text-white" />
+                <Plus className={`w-6 h-6 ${darkMode ? 'text-black' : 'text-white'}`} strokeWidth={2} />
               </button>
             </div>
 
-            {/* Onglets à droite */}
-            <div className="flex-1 flex">
-              {visibleTabs.slice(2, 4).map((tab) => {
+            {/* Onglets à droite (3 onglets) */}
+            <div className="flex-1 flex gap-2">
+              {visibleTabs.slice(2, 5).map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
-                
+
                 return (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex-1 flex flex-col items-center justify-center space-y-1 transition-all duration-200 active:scale-95 px-1 ${
-                      isActive 
-                        ? 'text-blue-600' 
-                        : darkMode ? 'text-gray-400 active:text-gray-300' : 'text-gray-400 active:text-gray-600'
-                    }`}
+                    className="flex-1 flex flex-col items-center justify-center gap-1 transition-all duration-200 active:scale-95 py-2"
                   >
-                    <div className={`p-2 rounded-xl transition-all duration-200 ${
-                      isActive 
-                        ? `bg-gradient-to-r ${tab.color} shadow-lg shadow-blue-500/25` 
-                        : darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    <div className={`p-2 rounded-2xl transition-all duration-200 ${
+                      isActive
+                        ? darkMode ? 'bg-white shadow-lg' : 'bg-black shadow-lg'
+                        : darkMode ? 'bg-[#1a1a1a]' : 'bg-gray-100'
                     }`}>
-                      <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-current'}`} />
+                      <Icon className={`w-5 h-5 ${
+                        isActive
+                          ? darkMode ? 'text-black' : 'text-white'
+                          : darkMode ? 'text-gray-500' : 'text-gray-400'
+                      }`} />
                     </div>
-                    <span className={`text-xs font-medium truncate max-w-full px-1 ${
-                      isActive ? 'text-blue-600' : darkMode ? 'text-gray-400' : 'text-gray-500'
+                    <span className={`text-xs font-medium truncate max-w-full ${
+                      isActive
+                        ? darkMode ? 'text-gray-50' : 'text-black'
+                        : darkMode ? 'text-gray-600' : 'text-gray-400'
                     }`}>
                       {tab.label}
                     </span>

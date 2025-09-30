@@ -5,73 +5,73 @@ export const initialDestinations: Destination[] = [
     id: '1',
     name: 'Pékin',
     country: 'Chine',
-    startDate: new Date('2026-05-02'),
+    startDate: new Date('2026-05-01'),
     endDate: new Date('2026-05-05'),
-    description: 'Capitale de la Chine, riche en histoire et culture'
+    description: 'Capitale de la Chine - Cité Interdite, Grande Muraille, Palais d\'Été'
   },
   {
     id: '2',
     name: 'Chongqing',
     country: 'Chine',
     startDate: new Date('2026-05-05'),
-    endDate: new Date('2026-05-09'),
-    description: 'Ville moderne avec des paysages spectaculaires'
+    endDate: new Date('2026-05-10'),
+    description: 'Mégapole des montagnes - Hotpot, pont Chaotianmen, vieille ville de Ciqikou'
   },
   {
     id: '3',
     name: 'Zhangjiajie',
     country: 'Chine',
-    startDate: new Date('2026-05-09'),
-    endDate: new Date('2026-05-11'),
-    description: 'Parc national aux formations rocheuses uniques'
+    startDate: new Date('2026-05-10'),
+    endDate: new Date('2026-05-12'),
+    description: 'Parc national Avatar - Montagnes flottantes, pont de verre, ascenseur Bailong'
   },
   {
     id: '4',
     name: 'Shanghai',
     country: 'Chine',
-    startDate: new Date('2026-05-11'),
+    startDate: new Date('2026-05-12'),
     endDate: new Date('2026-05-16'),
-    description: 'Centre économique et financier de la Chine'
+    description: 'Perle de l\'Orient - Bund, tour de Shanghai, jardin Yuyuan, Nanjing Road'
   },
   {
     id: '5',
     name: 'Tokyo',
     country: 'Japon',
     startDate: new Date('2026-05-16'),
-    endDate: new Date('2026-05-21'),
-    description: 'Capitale du Japon, mélange de tradition et modernité'
+    endDate: new Date('2026-05-22'),
+    description: 'Capitale ultra-moderne - Shibuya, Shinjuku, Asakusa, Akihabara, teamLab'
   },
   {
     id: '6',
     name: 'Nikko',
     country: 'Japon',
-    startDate: new Date('2026-05-21'),
-    endDate: new Date('2026-05-23'),
-    description: 'Ville historique avec des temples et la nature'
+    startDate: new Date('2026-05-22'),
+    endDate: new Date('2026-05-24'),
+    description: 'Sanctuaires UNESCO - Toshogu, lac Chuzenji, cascades de Kegon'
   },
   {
     id: '7',
-    name: 'Takaragawa Onsen',
+    name: 'Takaragawa & Ikaho',
     country: 'Japon',
-    startDate: new Date('2026-05-23'),
-    endDate: new Date('2026-05-24'),
-    description: 'Sources chaudes traditionnelles'
+    startDate: new Date('2026-05-24'),
+    endDate: new Date('2026-05-26'),
+    description: 'Onsen traditionnels - Sources chaudes en pleine nature, ryokan authentiques'
   },
   {
     id: '8',
-    name: 'Hakone',
+    name: 'Kyoto',
     country: 'Japon',
-    startDate: new Date('2026-05-24'),
-    endDate: new Date('2026-05-25'),
-    description: 'Resort de montagne avec vue sur le Mont Fuji'
+    startDate: new Date('2026-05-26'),
+    endDate: new Date('2026-05-28'),
+    description: 'Ancienne capitale impériale - Temples dorés, geishas, bambouseraie d\'Arashiyama'
   },
   {
     id: '9',
-    name: 'Kyoto & Osaka',
+    name: 'Osaka',
     country: 'Japon',
-    startDate: new Date('2026-05-25'),
+    startDate: new Date('2026-05-28'),
     endDate: new Date('2026-05-29'),
-    description: 'Ancienne capitale et centre gastronomique'
+    description: 'Capitale gastronomique - Dotonbori, château d\'Osaka, street food et takoyaki'
   }
 ];
 

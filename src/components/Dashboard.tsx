@@ -44,56 +44,56 @@ export default function Dashboard() {
     .slice(0, 4);
 
   return (
-    <div className="space-y-6">
-      {/* Header avec titre mobile-optimized */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-6 text-white shadow-lg">
-        <h1 className="text-2xl md:text-3xl font-bold mb-2">Voyage 2026</h1>
-        <p className="text-blue-100 text-sm md:text-base">
+    <div className="space-y-8">
+      {/* Header minimaliste */}
+      <div>
+        <h1 className="section-title mb-2">Voyage 2026</h1>
+        <p className="text-gray-500 dark:text-gray-500 text-base">
           1-29 mai • {tripData.destinations.length} destinations • {tripData.activities.length} activités
         </p>
       </div>
 
-      {/* Cartes de statistiques mobile-first */}
+      {/* Cartes de statistiques */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700 active:scale-95 transition-transform">
+        <div className="card p-6 hover-lift">
           <div className="flex flex-col items-center text-center">
-            <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-full mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-[#1a1a1a] flex items-center justify-center mb-4">
               <MapPin className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             </div>
-            <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Destinations</h3>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalDestinations}</p>
+            <h3 className="text-xs font-medium text-gray-500 dark:text-gray-500 mb-2">Destinations</h3>
+            <p className="text-3xl font-semibold text-gray-900 dark:text-gray-50">{totalDestinations}</p>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700 active:scale-95 transition-transform">
+        <div className="card p-6 hover-lift">
           <div className="flex flex-col items-center text-center">
-            <div className="p-3 bg-green-100 dark:bg-green-900 rounded-full mb-3">
-              <Calendar className="w-6 h-6 text-green-600 dark:text-green-400" />
+            <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-[#1a1a1a] flex items-center justify-center mb-4">
+              <Calendar className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Activités</h3>
-            <p className="text-xl font-bold text-gray-900 dark:text-white">
+            <h3 className="text-xs font-medium text-gray-500 dark:text-gray-500 mb-2">Activités</h3>
+            <p className="text-3xl font-semibold text-gray-900 dark:text-gray-50">
               {completedActivities}/{totalActivities}
             </p>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700 active:scale-95 transition-transform">
+        <div className="card p-6 hover-lift">
           <div className="flex flex-col items-center text-center">
-            <div className="p-3 bg-purple-100 dark:bg-purple-900 rounded-full mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-[#1a1a1a] flex items-center justify-center mb-4">
               <Users className="w-6 h-6 text-purple-600 dark:text-purple-400" />
             </div>
-            <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Voyageurs</h3>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalPeople}</p>
+            <h3 className="text-xs font-medium text-gray-500 dark:text-gray-500 mb-2">Voyageurs</h3>
+            <p className="text-3xl font-semibold text-gray-900 dark:text-gray-50">{totalPeople}</p>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700 active:scale-95 transition-transform">
+        <div className="card p-6 hover-lift">
           <div className="flex flex-col items-center text-center">
-            <div className="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-full mb-3">
-              <DollarSign className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+            <div className="w-12 h-12 rounded-2xl bg-orange-100 dark:bg-[#1a1a1a] flex items-center justify-center mb-4">
+              <DollarSign className="w-6 h-6 text-orange-600 dark:text-orange-400" />
             </div>
-            <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Restant</h3>
-            <p className="text-lg font-bold text-gray-900 dark:text-white">
+            <h3 className="text-xs font-medium text-gray-500 dark:text-gray-500 mb-2">Restant</h3>
+            <p className="text-2xl font-semibold text-gray-900 dark:text-gray-50">
               {tripData.budget.remaining.toLocaleString()}€
             </p>
           </div>
@@ -103,8 +103,8 @@ export default function Dashboard() {
       {/* Graphiques mobile-optimized */}
       <div className="space-y-6">
         {/* Répartition des dépenses */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-          <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Répartition des dépenses</h3>
+        <div className="card p-4 md:p-6">
+          <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-50">Répartition des dépenses</h3>
           {expensesByCategory.length > 0 ? (
             <div className="h-64 md:h-80">
               <ResponsiveContainer width="100%" height="100%">
@@ -128,9 +128,9 @@ export default function Dashboard() {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
+            <div className="h-64 flex items-center justify-center text-gray-500 dark:text-gray-500">
               <div className="text-center">
-                <PieChart className="w-12 h-12 mx-auto mb-2 text-gray-300 dark:text-gray-600" />
+                <PieChart className="w-12 h-12 mx-auto mb-2 text-gray-300 dark:text-gray-500" />
                 <p>Aucune dépense enregistrée</p>
               </div>
             </div>
