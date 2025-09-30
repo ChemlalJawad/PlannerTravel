@@ -132,7 +132,13 @@ export default function PeopleManager() {
                 <select
                   value={newPerson.role}
                   onChange={(e) => setNewPerson({ ...newPerson, role: e.target.value as Person['role'] })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'/%3e%3c/svg%3e")`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'right 0.7rem center',
+                    backgroundSize: '1.5em 1.5em'
+                  }}
                 >
                   <option value="traveler">Voyageur</option>
                   <option value="organizer">Organisateur</option>
@@ -238,7 +244,13 @@ export default function PeopleManager() {
                     <select
                       value={person.role}
                       onChange={(e) => handleUpdateRole(person.id, e.target.value as Person['role'])}
-                      className="text-sm border border-gray-300 rounded px-2 py-1"
+                      className="text-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-2 py-1 appearance-none"
+                      style={{
+                        backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'/%3e%3c/svg%3e")`,
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'right 0.3rem center',
+                        backgroundSize: '1em 1em'
+                      }}
                     >
                       <option value="traveler">Voyageur</option>
                       <option value="organizer">Organisateur</option>

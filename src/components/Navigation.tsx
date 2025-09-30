@@ -65,7 +65,7 @@ export default function Navigation() {
       <SyncStatus />
       
       {/* Header mobile simplifié */}
-      <header className={`shadow-sm border-b sticky top-0 z-40 md:hidden ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
+      <header className={`shadow-sm border-b sticky top-0 z-30 md:hidden ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
         <div className="px-4 py-3">
           <div className="flex items-center justify-between">
             <h1 className={`text-lg font-bold text-center flex-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
@@ -135,7 +135,7 @@ export default function Navigation() {
       </main>
 
       {/* Tab bar mobile en bas - plus accessible avec le pouce */}
-      <nav className={`fixed bottom-0 left-0 right-0 border-t md:hidden z-50 ${
+      <nav className={`fixed bottom-0 left-0 right-0 border-t md:hidden z-40 ${
         darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
       }`}>
         <div className="grid grid-cols-6 h-20 safe-area-inset-bottom">
