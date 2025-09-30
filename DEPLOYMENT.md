@@ -88,6 +88,12 @@ L'application comprend :
 
 ### Support
 
+**Erreur Netlify secrets scanning** :
+- Vérifiez qu'aucune vraie clé API n'est dans le code
+- Utilisez `SECRETS_SCAN_OMIT_KEYS` dans netlify.toml
+- Configurez les variables d'environnement dans Netlify uniquement
+- Supprimez les fichiers contenant des secrets réels
+
 **Erreur de build Netlify** :
 - Vérifiez que toutes les dépendances sont installées
 - Pour recharts : `npm install react-is`

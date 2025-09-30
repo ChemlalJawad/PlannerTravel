@@ -110,9 +110,14 @@ Voir [DEPLOYMENT.md](./DEPLOYMENT.md) pour les instructions complètes de déplo
 
 1. **Variables d'environnement** :
    ```
-   VITE_SUPABASE_URL=your-supabase-project-url
-   VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+   VITE_SUPABASE_URL=https://your-project-id.supabase.co
+   VITE_SUPABASE_ANON_KEY=your-anon-key-here
    ```
+   
+   ⚠️ **Sécurité** : 
+   - Configurez ces variables dans Netlify uniquement
+   - Ne jamais commiter de vraies clés dans Git
+   - Utilisez `.env.local` pour le développement local
 
 2. **Base de données Supabase** :
    - Créer un projet Supabase
