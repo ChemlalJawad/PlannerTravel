@@ -5,7 +5,7 @@ import { format, differenceInDays } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import type { Activity, Destination } from '../types';
+import type { Activity } from '../types';
 
 export default function DestinationList() {
   const { tripData, addDestination, updateDestination, deleteDestination, updateActivity, deleteActivity } = useTrip();

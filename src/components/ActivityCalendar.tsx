@@ -1,15 +1,13 @@
 import { useState } from 'react';
 import { Check, X, Plus, ChevronLeft, ChevronRight, Calendar, List, Edit2, Trash2, Clock, MapPin } from 'lucide-react';
 import { useTrip } from '../context/TripContext';
-import { useDarkMode } from '../context/DarkModeContext';
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday, addMonths, subMonths, startOfWeek, endOfWeek, parseISO } from 'date-fns';
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday, addMonths, subMonths, startOfWeek, endOfWeek } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import type { Activity } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function ActivityCalendar() {
   const { tripData, updateActivity, addActivity, deleteActivity } = useTrip();
-  const { darkMode } = useDarkMode();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedDayForEvents, setSelectedDayForEvents] = useState<Date | null>(null);

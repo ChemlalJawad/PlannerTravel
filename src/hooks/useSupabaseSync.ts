@@ -71,11 +71,18 @@ export function useSupabaseSync() {
         })) || initialTripData.people,
 
         budget: budget ? {
-          totalBudget: budget.total_budget,
-          currency: budget.currency,
-          spent: budget.spent,
-          remaining: budget.remaining,
-          byCategory: budget.by_category,
+          totalBudget: budget.total_budget || 0,
+          currency: budget.currency || 'EUR',
+          spent: budget.spent || 0,
+          remaining: budget.remaining || 0,
+          byCategory: budget.by_category || {
+            transport: 0,
+            accommodation: 0,
+            food: 0,
+            shopping: 0,
+            activities: 0,
+            other: 0,
+          },
         } : initialTripData.budget,
       };
 
