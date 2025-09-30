@@ -104,7 +104,7 @@ const IDEAS_BY_DESTINATION: Record<string, Idea[]> = {
   ]
 };
 
-const SEASONAL_TIPS = {
+const SEASONAL_TIPS: { [key: number]: { title: string; tips: string[] } } = {
   5: {
     title: 'Mai au Japon & Chine',
     tips: [
@@ -173,7 +173,7 @@ export default function IdeasToVisit() {
             <h2 className="font-semibold text-gray-900 dark:text-white">{seasonalInfo.title}</h2>
           </div>
           <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
-            {seasonalInfo.tips.map((tip, idx) => (
+            {seasonalInfo.tips.map((tip:any, idx:any) => (
               <li key={idx} className="flex items-start gap-2">
                 <span className="text-purple-600 dark:text-purple-400 mt-0.5">•</span>
                 <span>{tip}</span>
