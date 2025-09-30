@@ -2,123 +2,96 @@
 
 ## 📋 Étapes de configuration
 
-### 1. Créer les tables dans Supabase
+### 1. Créer un projet Supabase
 
 1. **Connectez-vous** à votre dashboard Supabase : https://app.supabase.com
-2. **Sélectionnez** votre projet : `bbbktqqtayfcspklywzj`
-3. **Accédez** à l'onglet "SQL Editor"
-4. **Copiez-collez** le contenu du fichier `supabase-schema.sql`
-5. **Exécutez** le script pour créer toutes les tables
+2. **Créez** un nouveau projet ou sélectionnez votre projet existant
+3. **Notez** votre URL de projet et votre clé anonyme
+4. **Accédez** à l'onglet "SQL Editor"
 
 ### 2. Configuration des variables d'environnement
 
-Le fichier `.env` est déjà configuré avec vos clés :
+Créez un fichier `.env.local` avec vos clés (remplacez par vos vraies valeurs) :
+
 ```env
-VITE_SUPABASE_URL=https://bbbktqqtayfcspklywzj.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+VITE_SUPABASE_URL=https://your-project-id.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key-here
 ```
 
-### 3. Structure de la base de données
+⚠️ **Important** : 
+- Ne jamais commiter le fichier `.env.local` 
+- Utilisez uniquement des clés d'exemple dans la documentation
+- Configurez les vraies clés directement dans Netlify
 
-#### Tables créées :
-- **`destinations`** - Les destinations du voyage
-- **`activities`** - Les activités planifiées
-- **`expenses`** - Les dépenses engagées
-- **`people`** - Les participants au voyage
-- **`budget`** - Le budget global
+### 3. Créer les tables dans Supabase
 
-#### Relations :
-- `activities.destination_id` → `destinations.id`
-- `expenses.destination_id` → `destinations.id`
+1. **Copiez-collez** le contenu du fichier `supabase-schema.sql` dans le SQL Editor
+2. **Exécutez** le script pour créer toutes les tables
+3. **Vérifiez** que toutes les tables sont créées : destinations, activities, expenses, people, budget
 
-### 4. Fonctionnalités de synchronisation
+### 4. Configuration Netlify
 
-#### ✅ **Implémentées :**
-- **Auto-sync** en temps réel avec debounce (1s)
-- **Mode hors ligne** avec mise en queue
-- **Indicateur de statut** de synchronisation
-- **Gestion d'erreurs** avec retry automatique
-- **Chargement initial** depuis Supabase
+Dans votre dashboard Netlify, allez dans **Site settings** > **Environment variables** et ajoutez :
 
-#### 🔄 **Synchronisation automatique :**
-- **Ajout/modification** d'activités → Sync immédiate
-- **Ajout/modification** de dépenses → Sync immédiate
-- **Changements de budget** → Sync immédiate
-- **Gestion des participants** → Sync immédiate
-
-#### 📱 **Mode hors ligne :**
-- Les données restent accessibles localement
-- Synchronisation automatique au retour en ligne
-- Indicateur visuel du statut de connexion
-
-### 5. Sécurité (RLS - Row Level Security)
-
-Les politiques RLS sont configurées pour permettre toutes les opérations pour l'instant.
-
-**Pour la production, configurez :**
-- Authentification des utilisateurs
-- Politiques RLS spécifiques par utilisateur
-- Validation des données côté serveur
-
-### 6. Déploiement et utilisation
-
-#### **Local :**
-```bash
-npm run dev
+```
+VITE_SUPABASE_URL = https://your-project-id.supabase.co
+VITE_SUPABASE_ANON_KEY = your-anon-key-here
 ```
 
-#### **Production :**
-```bash
-npm run build
-npm run preview
-```
+### 5. Structure de la base de données
 
-### 7. Monitoring et debug
+La base de données comprend 5 tables principales :
 
-#### **Console logs :**
-- `Data synced to Supabase successfully` - Sync réussie
-- `Error syncing to Supabase:` - Erreur de sync
-- `Offline - data will sync when back online` - Mode hors ligne
+#### 🗺️ `destinations`
+- Informations sur les destinations de voyage
+- Dates de début et fin
+- Description et pays
 
-#### **Indicateurs visuels :**
-- 🟢 **Vert** - Synchronisé
-- 🔵 **Bleu** - En cours de synchronisation
-- 🟠 **Orange** - Hors ligne
-- 🔴 **Rouge** - Erreur de synchronisation
+#### 📅 `activities` 
+- Activités planifiées par destination
+- Catégories : transport, hébergement, visites, nourriture, shopping, autres
+- Coûts et devises
+- Statut de completion
 
-### 8. Performance
+#### 💰 `expenses`
+- Dépenses du voyage
+- Catégorisation automatique
+- Multi-devises (EUR, CNY, JPY)
 
-- **Debounce** de 1 seconde pour éviter les sync multiples
-- **Lazy loading** des données au démarrage
-- **Optimistic updates** pour l'UX
-- **Retry automatique** en cas d'échec
+#### 👥 `people`
+- Participants au voyage
+- Rôles : organisateur, voyageur
+- Informations de contact
 
-## 🎯 État actuel
+#### 💵 `budget`
+- Budget global du voyage
+- Répartition par catégorie
+- Suivi en temps réel
 
-### ✅ **Fonctionnel :**
-- Connexion Supabase établie
-- Toutes les tables créées
-- Synchronisation bidirectionnelle
-- Interface mobile optimisée
-- Gestion offline/online
+## 🔧 Tests et validation
 
-### 🔄 **En cours :**
-- Tests de performance
-- Optimisation des requêtes
-- Gestion d'erreurs avancée
+Une fois configuré :
 
-### 📋 **À faire :**
-- [ ] Authentification utilisateur
-- [ ] Partage entre utilisateurs
-- [ ] Notifications push
-- [ ] Export PDF des données
-- [ ] Photos et médias
+1. **Testez localement** : `npm run dev`
+2. **Vérifiez les connexions** Supabase dans la console
+3. **Testez les opérations** CRUD dans l'interface
+4. **Déployez** sur Netlify
 
-## 🚨 Actions immédiates requises
+## 🚨 Sécurité
 
-1. **Exécuter le script SQL** dans Supabase
-2. **Vérifier la connexion** en regardant l'indicateur de sync
-3. **Tester l'ajout/modification** de données
-4. **Vérifier la persistence** en rafraîchissant la page
+- ✅ Utilisez des clés d'environnement
+- ✅ Activez Row Level Security (RLS) en production
+- ✅ Ne jamais exposer les clés dans le code
+- ✅ Utilisez des politiques de sécurité appropriées
 
-L'application est maintenant **100% fonctionnelle** avec Supabase ! 🎉
+## 📞 Support
+
+En cas de problème :
+1. Vérifiez les logs de la console navigateur
+2. Contrôlez les variables d'environnement
+3. Testez la connexion Supabase
+4. Consultez la documentation Supabase
+
+---
+
+🔐 **Rappel de sécurité** : Ce fichier ne contient que des exemples. Vos vraies clés doivent être configurées dans Netlify et jamais commitées dans Git.

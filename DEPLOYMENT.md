@@ -62,6 +62,8 @@ Les erreurs TypeScript suivantes ont été résolues :
 - ✅ Fichiers corrompus supprimés
 - ✅ Version Node.js spécifiée (22.12.0)
 - ✅ Configuration Netlify complète
+- ✅ Dépendance react-is ajoutée pour recharts
+- ✅ Configuration Vite optimisée pour le chunking
 
 ### Test Local
 
@@ -85,6 +87,12 @@ L'application comprend :
 - 💾 Synchronisation Supabase (quand configuré)
 
 ### Support
+
+**Erreur de build Netlify** :
+- Vérifiez que toutes les dépendances sont installées
+- Pour recharts : `npm install react-is`
+- Vérifiez la configuration Vite
+- Contrôlez les logs de build détaillés
 
 En cas de problème de déploiement :
 1. Vérifiez les logs de build dans Netlify
