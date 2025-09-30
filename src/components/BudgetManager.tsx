@@ -553,7 +553,7 @@ export default function BudgetManager() {
                     </label>
                     <select
                       value={expenseForm.currency}
-                      onChange={(e) => setExpenseForm({ ...expenseForm, currency: e.target.value })}
+                      onChange={(e) => setExpenseForm({ ...expenseForm, currency: e.target.value as 'EUR' | 'CNY' | 'JPY' })}
                       className="input-field"
                     >
                       <option value="EUR">EUR</option>
@@ -570,7 +570,7 @@ export default function BudgetManager() {
                   </label>
                   <select
                     value={expenseForm.category}
-                    onChange={(e) => setExpenseForm({ ...expenseForm, category: e.target.value })}
+                    onChange={(e) => setExpenseForm({ ...expenseForm, category: e.target.value as 'transport' | 'accommodation' | 'food' | 'shopping' | 'activities' | 'other' })}
                     className="input-field"
                   >
                     <option value="transport">🚗 Transport</option>
