@@ -385,13 +385,148 @@ export default function ExpenseTracker() {
                     <div className="flex-1 min-w-0">
                       <div className="w-full">
                         {isEditing ? (
-                          <div className="space-y-2">
-                            <input
-                              type="text"
-                              defaultValue={expense.title}
-                              onChange={(e) => handleUpdateExpense(expense.id, { title: e.target.value })}
-                              className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded"
-                            />
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            {/* Titre */}
+                            <div>
+                              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                                Titre
+                              </label>
+                              <input
+                                type="text"
+                                defaultValue={expense.title}
+                                onChange={(e) => handleUpdateExpense(expense.id, { title: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Titre de la dépense"
+                              />
+                            </div>
+                            
+                            {/* Montant */}
+                            <div>
+                              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                                Montant
+                              </label>
+                              <input
+                                type="number"
+                                step="0.01"
+                                defaultValue={expense.amount}
+                                onChange={(e) => handleUpdateExpense(expense.id, { amount: Number(e.target.value) })}
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="0.00"
+                              />
+                            </div>
+                            
+                            {/* Catégorie */}
+                            <div>
+                              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                                Catégorie
+                              </label>
+                              <select
+                                defaultValue={expense.category}
+                                onChange={(e) => handleUpdateExpense(expense.id, { category: e.target.value as Expense['category'] })}
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                                style={{
+                                  backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'/%3e%3c/svg%3e")`,
+                                  backgroundRepeat: 'no-repeat',
+                                  backgroundPosition: 'right 0.7rem center',
+                                  backgroundSize: '1.5em 1.5em'
+                                }}
+                              >
+                                {categories.map(category => (
+                                  <option key={category.value} value={category.value}>
+                                    {category.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            
+                            {/* Destination */}
+                            <div>
+                              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                                Destination
+                              </label>
+                              <select
+                                defaultValue={expense.destinationId}
+                                onChange={(e) => handleUpdateExpense(expense.id, { destinationId: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                                style={{
+                                  backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'/%3e%3c/svg%3e")`,
+                                  backgroundRepeat: 'no-repeat',
+                                  backgroundPosition: 'right 0.7rem center',
+                                  backgroundSize: '1.5em 1.5em'
+                                }}
+                              >
+                                {tripData.destinations.map(destination => (
+                                  <option key={destination.id} value={destination.id}>
+                                    {destination.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            
+                            {/* Date */}
+                            <div>
+                              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                                Date
+                              </label>
+                              <input
+                                type="date"
+                                defaultValue={format(expense.date, 'yyyy-MM-dd')}
+                                onChange={(e) => handleUpdateExpense(expense.id, { date: new Date(e.target.value) })}
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              />
+                            </div>
+                            
+                            {/* Devise */}
+                            <div>
+                              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                                Devise
+                              </label>
+                              <select
+                                defaultValue={expense.currency}
+                                onChange={(e) => handleUpdateExpense(expense.id, { currency: e.target.value as Expense['currency'] })}
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                                style={{
+                                  backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'/%3e%3c/svg%3e")`,
+                                  backgroundRepeat: 'no-repeat',
+                                  backgroundPosition: 'right 0.7rem center',
+                                  backgroundSize: '1.5em 1.5em'
+                                }}
+                              >
+                                <option value="EUR">EUR (€)</option>
+                                <option value="CNY">CNY (¥)</option>
+                                <option value="JPY">JPY (¥)</option>
+                              </select>
+                            </div>
+                            
+                            {/* Description */}
+                            <div className="sm:col-span-2">
+                              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                                Description
+                              </label>
+                              <textarea
+                                defaultValue={expense.description || ''}
+                                onChange={(e) => handleUpdateExpense(expense.id, { description: e.target.value })}
+                                rows={2}
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                                placeholder="Description optionnelle..."
+                              />
+                            </div>
+                            
+                            {/* Boutons d'action */}
+                            <div className="sm:col-span-2 flex space-x-2 pt-2">
+                              <button
+                                onClick={() => setEditingExpense(null)}
+                                className="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg transition-colors text-sm font-medium"
+                              >
+                                ✅ Valider
+                              </button>
+                              <button
+                                onClick={() => setEditingExpense(null)}
+                                className="flex-1 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors text-sm font-medium"
+                              >
+                                ❌ Annuler
+                              </button>
+                            </div>
                           </div>
                         ) : (
                           <>

@@ -338,18 +338,6 @@ export default function ActivityCalendar() {
                       </div>
                     )}
                   </div>
-
-                  {/* Bouton d'ajout rapide */}
-                  <button
-                    className="absolute top-1 right-1 opacity-0 hover:opacity-100 transition-opacity p-1 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-full hover:bg-blue-200 dark:hover:bg-blue-800"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openAddModal(day);
-                    }}
-                    title="Ajouter une activité"
-                  >
-                    <Plus className="w-3 h-3" />
-                  </button>
                 </div>
               );
             })}
