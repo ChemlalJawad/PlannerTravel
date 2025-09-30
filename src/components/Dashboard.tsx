@@ -47,7 +47,7 @@ export default function Dashboard() {
     <div className="space-y-6">
       {/* Header avec titre mobile-optimized */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-6 text-white shadow-lg">
-        <h1 className="text-2xl md:text-3xl font-bold mb-2">Voyage 2024</h1>
+        <h1 className="text-2xl md:text-3xl font-bold mb-2">Voyage 2026</h1>
         <p className="text-blue-100 text-sm md:text-base">
           1-29 mai • {tripData.destinations.length} destinations • {tripData.activities.length} activités
         </p>
