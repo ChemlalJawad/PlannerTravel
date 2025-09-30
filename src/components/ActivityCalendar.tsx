@@ -218,6 +218,7 @@ export default function ActivityCalendar() {
           <div className="flex items-center space-x-2">
             <button
               onClick={() => openAddModal()}
+              data-add-activity
               className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors text-sm font-medium"
             >
               <Plus className="w-4 h-4" />

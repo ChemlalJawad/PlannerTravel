@@ -99,6 +99,7 @@ export default function ExpenseTracker() {
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Suivi des dépenses</h1>
         <button
           onClick={() => setShowAddForm(true)}
+          data-add-expense
           className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg flex items-center hover:from-blue-700 hover:to-purple-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-lg font-medium"
         >
           <Plus className="w-5 h-5 mr-2" />
