@@ -14,11 +14,15 @@ export default function ActivityCalendar() {
   const [activeTab, setActiveTab] = useState<'calendar' | 'list'>('calendar');
   const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
   
+  // Trouver Pékin et utiliser sa date de début comme défaut
+  const beijingDestination = tripData.destinations.find(dest => dest.name === 'Pékin');
+  const defaultDate = beijingDestination ? new Date(beijingDestination.startDate) : new Date();
+  
   const [newActivity, setNewActivity] = useState({
-    destinationId: '',
+    destinationId: beijingDestination?.id || '',
     title: '',
     description: '',
-    date: new Date(),
+    date: defaultDate,
     time: '',
     category: 'other' as Activity['category'],
     cost: undefined as number | undefined,
@@ -80,10 +84,10 @@ export default function ActivityCalendar() {
     try {
       await addActivity(activity);
       setNewActivity({
-        destinationId: '',
+        destinationId: beijingDestination?.id || '',
         title: '',
         description: '',
-        date: new Date(),
+        date: defaultDate,
         time: '',
         category: 'other',
         cost: undefined,
@@ -99,8 +103,8 @@ export default function ActivityCalendar() {
   const openAddModal = (date?: Date) => {
     setNewActivity({
       ...newActivity,
-      date: date || new Date(),
-      destinationId: tripData.destinations[0]?.id || ''
+      date: date || defaultDate,
+      destinationId: beijingDestination?.id || tripData.destinations[0]?.id || ''
     });
     setEditingActivity(null);
     setShowAddModal(true);
@@ -140,10 +144,10 @@ export default function ActivityCalendar() {
       });
       
       setNewActivity({
-        destinationId: '',
+        destinationId: beijingDestination?.id || '',
         title: '',
         description: '',
-        date: new Date(),
+        date: defaultDate,
         time: '',
         category: 'other',
         cost: undefined,
@@ -667,6 +671,18 @@ export default function ActivityCalendar() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Date
+                    </label>
+                    <input
+                      type="date"
+                      value={format(newActivity.date, 'yyyy-MM-dd')}
+                      onChange={(e) => setNewActivity({ ...newActivity, date: new Date(e.target.value) })}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                  
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Heure

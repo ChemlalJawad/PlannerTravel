@@ -41,7 +41,7 @@ export default function Dashboard() {
   const upcomingActivities = tripData.activities
     .filter(activity => !activity.isCompleted && activity.date >= new Date())
     .sort((a, b) => a.date.getTime() - b.date.getTime())
-    .slice(0, 5);
+    .slice(0, 4);
 
   return (
     <div className="space-y-6">
