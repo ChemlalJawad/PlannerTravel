@@ -138,8 +138,8 @@ export default function Dashboard() {
         </div>
 
         {/* Dépenses par destination - Mobile stack */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-          <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Dépenses par destination</h3>
+        <div className="card p-4 md:p-6">
+          <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-50">Dépenses par destination</h3>
           <div className="h-64 md:h-80">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={destinationData} margin={{ bottom: 60 }}>
@@ -162,27 +162,27 @@ export default function Dashboard() {
       </div>
 
       {/* Prochaines activités mobile-optimized */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-        <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Prochaines activités</h3>
+      <div className="card p-4 md:p-6">
+        <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-50">Prochaines activités</h3>
         {upcomingActivities.length > 0 ? (
           <div className="space-y-3">
             {upcomingActivities.map((activity) => {
               const destination = tripData.destinations.find(d => d.id === activity.destinationId);
               return (
-                <div key={activity.id} className="flex items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-100 dark:border-gray-600 active:scale-[0.98] transition-transform">
-                  <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl mr-4 flex-shrink-0">
-                    <Plane className="w-5 h-5 text-white" />
+                <div key={activity.id} className="flex items-center p-4 bg-gray-50 dark:bg-[#1a1a1a] rounded-xl border border-gray-100 dark:border-[#2a2a2a] active:scale-[0.98] transition-transform hover-lift">
+                  <div className="p-3 bg-blue-100 dark:bg-[#1a1a1a] rounded-xl mr-4 flex-shrink-0 border border-gray-100 dark:border-[#2a2a2a]">
+                    <Plane className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-gray-900 dark:text-white truncate">{activity.title}</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 truncate">
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-50 truncate">{activity.title}</h4>
+                    <p className="text-sm text-gray-500 dark:text-gray-500 truncate">
                       {destination?.name} • {format(activity.date, 'dd MMM', { locale: fr })}
                       {activity.time && ` à ${activity.time}`}
                     </p>
                   </div>
                   {activity.cost && (
                     <div className="text-right flex-shrink-0 ml-2">
-                      <span className="text-lg font-bold text-gray-900 dark:text-white">
+                      <span className="text-lg font-semibold text-gray-900 dark:text-gray-50">
                         {activity.cost}€
                       </span>
                     </div>
@@ -193,8 +193,8 @@ export default function Dashboard() {
           </div>
         ) : (
           <div className="text-center py-8">
-            <Calendar className="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" />
-            <p className="text-gray-500 dark:text-gray-400">Aucune activité à venir</p>
+            <Calendar className="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-500" />
+            <p className="text-gray-500 dark:text-gray-500">Aucune activité à venir</p>
           </div>
         )}
       </div>

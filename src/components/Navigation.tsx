@@ -29,7 +29,9 @@ export default function Navigation() {
 
   // Fonctions pour ouvrir les modales d'ajout
   const handleAddExpense = () => {
-    setActiveTab('expenses');
+    if (activeTab !== 'budget') {
+      setActiveTab('budget');
+    }
     setShowAddMenu(false);
     // Déclencher l'ouverture de la modale d'ajout de dépense
     setTimeout(() => {

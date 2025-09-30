@@ -131,42 +131,44 @@ export default function DestinationList() {
   };
 
   const getDestinationExpenses = (destinationId: string) => {
-    return tripData.expenses
+    // Somme des dépenses explicites
+    const expensesTotal = tripData.expenses
       .filter((expense: any) => expense.destinationId === destinationId)
       .reduce((sum: number, expense: any) => sum + expense.amount, 0);
+
+    // Somme des coûts des activités
+    const activitiesTotal = tripData.activities
+      .filter((activity: Activity) => activity.destinationId === destinationId && activity.cost)
+      .reduce((sum: number, activity: Activity) => sum + (activity.cost || 0), 0);
+
+    return expensesTotal + activitiesTotal;
   };
 
   return (
-    <div className={`p-4 sm:p-6 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} min-h-screen`}>
-      <div className="max-w-4xl mx-auto">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-0">
-          <h2 className={`text-xl sm:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-            Lieux & Destinations
-          </h2>
-          <button
-            onClick={handleAddDestination}
-            data-add-destination
-            className={`flex items-center justify-center px-3 sm:px-4 py-2 rounded-lg border transition-colors w-full sm:w-auto ${
-              darkMode 
-                ? 'bg-blue-600 hover:bg-blue-700 text-white border-blue-500' 
-                : 'bg-blue-600 hover:bg-blue-700 text-white border-blue-600'
-            }`}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Ajouter une destination
-          </button>
-        </div>
+    <div className="space-y-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
+        <h1 className="section-title">Lieux & Destinations</h1>
+        <button
+          onClick={handleAddDestination}
+          data-add-destination
+          className="btn-primary w-full sm:w-auto"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Ajouter une destination
+        </button>
+      </div>
         
+      <div className="space-y-6">
         {tripData.destinations.map((destination: any, index: number) => {
           const activities = getDestinationActivities(destination.id);
           const expenses = getDestinationExpenses(destination.id);
           const duration = differenceInDays(destination.endDate || destination.departureDate, destination.startDate || destination.arrivalDate);
           const isChina = destination.country === 'Chine';
-          
+
           return (
             <div
               key={destination.id}
-              className={`mb-4 sm:mb-6 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-xl sm:rounded-2xl shadow-lg overflow-hidden border`}
+              className="card overflow-hidden hover-lift"
             >
               <div className="p-4 sm:p-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3 sm:gap-0">
@@ -175,37 +177,33 @@ export default function DestinationList() {
                       {isChina ? '🇨🇳' : '🇯🇵'}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <h3 className={`text-lg sm:text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} truncate`}>
+                      <h3 className={`text-lg sm:text-xl font-semibold ${darkMode ? 'text-gray-50' : 'text-gray-900'} truncate`}>
                         {destination.name}
                       </h3>
-                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{destination.country || 'Destination'}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-500">{destination.country || 'Destination'}</p>
                     </div>
                   </div>
                   <div className="flex items-center justify-between sm:justify-end gap-3">
                     <div className="text-center sm:text-right">
-                      <div className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>Étape {index + 1}</div>
-                      <div className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                      <div className="text-xs text-gray-500 dark:text-gray-500">Étape {index + 1}</div>
+                      <div className={`text-lg font-semibold ${darkMode ? 'text-gray-50' : 'text-gray-900'}`}>
                         {duration > 0 ? duration : 1} jour{duration > 1 ? 's' : ''}
                       </div>
                     </div>
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleEditDestination(destination)}
-                        className={`p-2 rounded-lg border transition-colors ${
-                          darkMode 
-                            ? 'bg-gray-700 hover:bg-gray-600 text-gray-300 border-gray-600' 
-                            : 'bg-gray-100 hover:bg-gray-200 text-gray-600 border-gray-300'
-                        }`}
+                        className="btn-outline p-2"
                         title="Modifier la destination"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDeleteDestination(destination.id)}
-                        className={`p-2 rounded-lg border transition-colors ${
-                          darkMode 
-                            ? 'bg-red-900 hover:bg-red-800 text-red-300 border-red-700' 
-                            : 'bg-red-100 hover:bg-red-200 text-red-600 border-red-300'
+                        className={`p-2 rounded-xl border transition-colors ${
+                          darkMode
+                            ? 'bg-[#1a1a1a] hover:bg-red-900/20 text-red-400 border-[#2a2a2a] hover:border-red-900'
+                            : 'bg-red-50 hover:bg-red-100 text-red-600 border-red-200 hover:border-red-300'
                         }`}
                         title="Supprimer la destination"
                       >
@@ -218,7 +216,7 @@ export default function DestinationList() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                   <div className="order-2 lg:order-1">
                     {/* Dates */}
-                    <div className={`flex items-center ${darkMode ? 'text-gray-300' : 'text-gray-600'} mb-3`}>
+                    <div className="flex items-center text-gray-500 dark:text-gray-500 mb-3">
                       <Calendar className="w-4 h-4 mr-2 flex-shrink-0" />
                       <span className="text-sm">
                         {format(destination.startDate || destination.arrivalDate, 'dd MMM', { locale: fr })} - {format(destination.endDate || destination.departureDate, 'dd MMM yyyy', { locale: fr })}
@@ -227,37 +225,37 @@ export default function DestinationList() {
 
                     {/* Description */}
                     {destination.description && (
-                      <p className={`${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-4 leading-relaxed text-sm sm:text-base`}>
+                      <p className={`mb-4 leading-relaxed text-sm sm:text-base ${darkMode ? 'text-gray-400' : 'text-gray-700'}`}>
                         {destination.description}
                       </p>
                     )}
                     
                     {/* Statistiques mobile-friendly */}
                     <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4">
-                      <div className={`rounded-lg sm:rounded-xl p-2 sm:p-3 text-center ${darkMode ? 'bg-gray-700' : 'bg-gradient-to-br from-blue-50 to-blue-100'}`}>
+                      <div className={`rounded-xl p-2 sm:p-3 text-center border ${darkMode ? 'bg-[#1a1a1a] border-[#2a2a2a]' : 'bg-blue-50 border-blue-100'}`}>
                         <Clock className={`w-4 sm:w-5 h-4 sm:h-5 mx-auto mb-1 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`} />
-                        <div className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-1`}>Activités</div>
-                        <div className={`text-sm sm:text-base font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{activities.length}</div>
-                      </div>
-                      
-                      <div className={`rounded-lg sm:rounded-xl p-2 sm:p-3 text-center ${darkMode ? 'bg-gray-700' : 'bg-gradient-to-br from-green-50 to-green-100'}`}>
-                        <MapPin className={`w-4 sm:w-5 h-4 sm:h-5 mx-auto mb-1 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
-                        <div className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-1`}>Dépenses</div>
-                        <div className={`text-sm sm:text-base font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{expenses.toLocaleString()}€</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-500 mb-1">Activités</div>
+                        <div className={`text-sm sm:text-base font-semibold ${darkMode ? 'text-gray-50' : 'text-gray-900'}`}>{activities.length}</div>
                       </div>
 
-                      <div className={`rounded-lg sm:rounded-xl p-2 sm:p-3 text-center ${darkMode ? 'bg-gray-700' : 'bg-gradient-to-br from-purple-50 to-purple-100'}`}>
-                        <div className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-1`}>Par jour</div>
-                        <div className={`text-sm sm:text-base font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                      <div className={`rounded-xl p-2 sm:p-3 text-center border ${darkMode ? 'bg-[#1a1a1a] border-[#2a2a2a]' : 'bg-green-50 border-green-100'}`}>
+                        <MapPin className={`w-4 sm:w-5 h-4 sm:h-5 mx-auto mb-1 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
+                        <div className="text-xs text-gray-500 dark:text-gray-500 mb-1">Dépenses</div>
+                        <div className={`text-sm sm:text-base font-semibold ${darkMode ? 'text-gray-50' : 'text-gray-900'}`}>{expenses.toLocaleString()}€</div>
+                      </div>
+
+                      <div className={`rounded-xl p-2 sm:p-3 text-center border ${darkMode ? 'bg-[#1a1a1a] border-[#2a2a2a]' : 'bg-purple-50 border-purple-100'}`}>
+                        <div className="text-xs text-gray-500 dark:text-gray-500 mb-1">Par jour</div>
+                        <div className={`text-sm sm:text-base font-semibold ${darkMode ? 'text-gray-50' : 'text-gray-900'}`}>
                           {duration > 0 ? Math.round(expenses / duration).toLocaleString() : 0}€
                         </div>
                       </div>
                     </div>
 
                     {destination.accommodation && (
-                      <div className={`p-3 sm:p-4 rounded-lg sm:rounded-xl ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-blue-50 border-blue-100'} border`}>
-                        <span className={`font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'} text-sm`}>Logement:</span>
-                        <div className={`${darkMode ? 'text-white' : 'text-gray-900'} font-semibold text-sm sm:text-base`}>
+                      <div className={`p-3 sm:p-4 rounded-xl border ${darkMode ? 'bg-[#1a1a1a] border-[#2a2a2a]' : 'bg-blue-50 border-blue-100'}`}>
+                        <span className="font-medium text-gray-500 dark:text-gray-500 text-sm">Logement:</span>
+                        <div className={`font-semibold text-sm sm:text-base ${darkMode ? 'text-gray-50' : 'text-gray-900'}`}>
                           {destination.accommodation}
                         </div>
                       </div>
@@ -266,20 +264,20 @@ export default function DestinationList() {
 
                   <div className="order-1 lg:order-2">
                     <div className="flex items-center justify-between mb-3">
-                      <h4 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'} text-sm sm:text-base`}>
+                      <h4 className={`font-semibold text-sm sm:text-base ${darkMode ? 'text-gray-50' : 'text-gray-900'}`}>
                         Activités ({activities.length})
                       </h4>
                     </div>
-                    
+
                     {activities.length === 0 ? (
-                      <div className={`p-4 sm:p-6 text-center rounded-lg sm:rounded-xl border-2 border-dashed ${
-                        darkMode ? 'border-gray-600 bg-gray-700' : 'border-gray-300 bg-gray-50'
+                      <div className={`p-4 sm:p-6 text-center rounded-xl border-2 border-dashed ${
+                        darkMode ? 'border-[#2a2a2a] bg-[#1a1a1a]' : 'border-gray-300 bg-gray-50'
                       }`}>
-                        <Calendar className={`w-6 sm:w-8 h-6 sm:h-8 mx-auto mb-2 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`} />
-                        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                        <Calendar className="w-6 sm:w-8 h-6 sm:h-8 mx-auto mb-2 text-gray-400 dark:text-gray-500" />
+                        <p className="text-sm text-gray-500 dark:text-gray-500">
                           Aucune activité planifiée
                         </p>
-                        <p className={`text-xs mt-1 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                        <p className="text-xs mt-1 text-gray-400 dark:text-gray-500">
                           Utilisez l'onglet Planning pour ajouter des activités
                         </p>
                       </div>
@@ -288,9 +286,9 @@ export default function DestinationList() {
                         {activities.map((activity: Activity) => (
                           <div
                             key={activity.id}
-                            className={`p-3 rounded-lg sm:rounded-xl border ${
-                              darkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'
-                            } transition-colors`}
+                            className={`p-3 rounded-xl border transition-colors ${
+                              darkMode ? 'bg-[#1a1a1a] border-[#2a2a2a] hover:border-[#3a3a3a]' : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+                            }`}
                           >
                             <div className="flex items-start justify-between">
                               <div className="flex items-start flex-1 min-w-0">
@@ -307,33 +305,33 @@ export default function DestinationList() {
                                 
                                 <div className="min-w-0 flex-1">
                                   <div className={`text-sm font-medium ${
-                                    activity.isCompleted 
-                                      ? darkMode ? 'text-gray-500 line-through' : 'text-gray-400 line-through'
-                                      : darkMode ? 'text-white' : 'text-gray-900'
+                                    activity.isCompleted
+                                      ? 'text-gray-400 dark:text-gray-500 line-through'
+                                      : darkMode ? 'text-gray-50' : 'text-gray-900'
                                   }`}>
                                     {activity.title}
                                   </div>
-                                  
+
                                   <div className="flex flex-wrap items-center gap-2 mt-1">
-                                    <div className={`flex items-center text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                                    <div className="flex items-center text-xs text-gray-500 dark:text-gray-500">
                                       <Calendar className="w-3 h-3 mr-1" />
                                       {format(activity.date, 'dd/MM', { locale: fr })}
                                     </div>
-                                    
+
                                     {activity.time && (
-                                      <div className={`flex items-center text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                                      <div className="flex items-center text-xs text-gray-500 dark:text-gray-500">
                                         <Clock className="w-3 h-3 mr-1" />
                                         {activity.time}
                                       </div>
                                     )}
-                                    
+
                                     <span className={`px-2 py-0.5 text-xs rounded-full border ${getCategoryColor(activity.category)}`}>
                                       {activity.category}
                                     </span>
                                   </div>
-                                  
+
                                   {activity.description && (
-                                    <p className={`text-xs mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'} line-clamp-2`}>
+                                    <p className="text-xs mt-1 text-gray-500 dark:text-gray-500 line-clamp-2">
                                       {activity.description}
                                     </p>
                                   )}
@@ -342,15 +340,15 @@ export default function DestinationList() {
                               
                               <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1 ml-2">
                                 {activity.cost && (
-                                  <div className={`text-sm font-semibold ${darkMode ? 'text-green-400' : 'text-green-600'} mr-0 sm:mr-2 mb-1 sm:mb-0`}>
+                                  <div className={`text-sm font-semibold mr-0 sm:mr-2 mb-1 sm:mb-0 ${darkMode ? 'text-green-400' : 'text-green-600'}`}>
                                     {activity.cost}€
                                   </div>
                                 )}
-                                
+
                                 <button
                                   onClick={() => handleDeleteActivity(activity.id)}
-                                  className={`p-1 rounded transition-colors ${
-                                    darkMode ? 'hover:bg-red-900 text-red-400 hover:text-red-300' : 'hover:bg-red-100 text-red-500 hover:text-red-700'
+                                  className={`p-1 rounded-lg transition-colors ${
+                                    darkMode ? 'hover:bg-red-900/20 text-red-400' : 'hover:bg-red-100 text-red-500'
                                   }`}
                                 >
                                   <Trash2 className="w-4 h-4" />
@@ -371,24 +369,24 @@ export default function DestinationList() {
 
       {/* Modal d'ajout/édition de destination */}
       {showDestinationModal && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50"
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-50 animate-fade-in"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               setShowDestinationModal(false);
             }
           }}
         >
-          <div className={`w-full sm:w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-xl ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} sm:border max-h-[90vh] sm:max-h-[80vh] overflow-y-auto`}>
+          <div className={`w-full sm:w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-xl border max-h-[90vh] sm:max-h-[80vh] overflow-y-auto animate-slide-up ${darkMode ? 'bg-[#141414] border-[#1f1f1f]' : 'bg-white border-gray-200'}`}>
             <div className="p-4 sm:p-6">
               {/* En-tête mobile */}
               <div className="flex items-center justify-between mb-4 sm:mb-6">
-                <h3 className={`text-lg sm:text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                <h3 className={`text-lg sm:text-xl font-semibold ${darkMode ? 'text-gray-50' : 'text-gray-900'}`}>
                   {editingDestination ? 'Modifier la destination' : 'Nouvelle destination'}
                 </h3>
                 <button
                   onClick={cancelDestinationEdit}
-                  className={`sm:hidden p-2 rounded-lg ${darkMode ? 'text-gray-400 hover:text-gray-300 hover:bg-gray-700' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}`}
+                  className={`sm:hidden p-2 rounded-xl transition-colors ${darkMode ? 'text-gray-400 hover:text-gray-300 hover:bg-[#1a1a1a]' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}`}
                 >
                   ✕
                 </button>
@@ -396,85 +394,65 @@ export default function DestinationList() {
               
               <div className="space-y-4 sm:space-y-5">
                 <div>
-                  <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <label className="block text-sm font-medium mb-2 text-gray-500 dark:text-gray-500">
                     Nom de la destination *
                   </label>
                   <input
                     type="text"
                     value={newDestination.name}
                     onChange={(e) => setNewDestination({ ...newDestination, name: e.target.value })}
-                    className={`w-full px-3 py-3 sm:py-2 rounded-lg border text-base sm:text-sm ${
-                      darkMode 
-                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500' 
-                        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500'
-                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20`}
+                    className="input-field"
                     placeholder="Tokyo, Paris, New York..."
                   />
                 </div>
                 
                 <div>
-                  <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <label className="block text-sm font-medium mb-2 text-gray-500 dark:text-gray-500">
                     Pays
                   </label>
                   <input
                     type="text"
                     value={newDestination.country}
                     onChange={(e) => setNewDestination({ ...newDestination, country: e.target.value })}
-                    className={`w-full px-3 py-3 sm:py-2 rounded-lg border text-base sm:text-sm ${
-                      darkMode 
-                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500' 
-                        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500'
-                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20`}
+                    className="input-field"
                     placeholder="Japon, France, États-Unis..."
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                    <label className="block text-sm font-medium mb-2 text-gray-500 dark:text-gray-500">
                       Date d'arrivée *
                     </label>
                     <input
                       type="date"
                       value={format(newDestination.startDate, 'yyyy-MM-dd')}
                       onChange={(e) => setNewDestination({ ...newDestination, startDate: new Date(e.target.value) })}
-                      className={`w-full px-3 py-3 sm:py-2 rounded-lg border text-base sm:text-sm ${
-                        darkMode 
-                          ? 'bg-gray-700 border-gray-600 text-white focus:border-blue-500' 
-                          : 'bg-white border-gray-300 text-gray-900 focus:border-blue-500'
-                      } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20`}
+                      className="input-field"
                     />
                   </div>
-                  
+
                   <div>
-                    <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                    <label className="block text-sm font-medium mb-2 text-gray-500 dark:text-gray-500">
                       Date de départ *
                     </label>
                     <input
                       type="date"
                       value={format(newDestination.endDate, 'yyyy-MM-dd')}
                       onChange={(e) => setNewDestination({ ...newDestination, endDate: new Date(e.target.value) })}
-                      className={`w-full px-3 py-3 sm:py-2 rounded-lg border text-base sm:text-sm ${
-                        darkMode 
-                          ? 'bg-gray-700 border-gray-600 text-white focus:border-blue-500' 
-                          : 'bg-white border-gray-300 text-gray-900 focus:border-blue-500'
-                      } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20`}
+                      className="input-field"
                     />
                   </div>
                 </div>
-                
+
                 <div>
-                  <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <label className="block text-sm font-medium mb-2 text-gray-500 dark:text-gray-500">
                     Description
                   </label>
                   <textarea
                     value={newDestination.description}
                     onChange={(e) => setNewDestination({ ...newDestination, description: e.target.value })}
-                    className={`w-full px-3 py-3 sm:py-2 rounded-lg border text-base sm:text-sm ${
-                      darkMode 
-                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500' 
-                        : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500'
-                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 resize-none`}
+                    className="input-field resize-none"
                     rows={4}
                     placeholder="Description de la destination, points d'intérêt, notes..."
                   />
@@ -484,28 +462,20 @@ export default function DestinationList() {
               <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6 sm:mt-8">
                 <button
                   onClick={cancelDestinationEdit}
-                  className={`hidden sm:block px-4 py-2 rounded-lg border transition-colors ${
-                    darkMode 
-                      ? 'border-gray-600 text-gray-300 hover:bg-gray-700' 
-                      : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                  }`}
+                  className="hidden sm:block btn-outline"
                 >
                   Annuler
                 </button>
                 <button
                   onClick={handleSaveDestination}
                   disabled={!newDestination.name.trim()}
-                  className="w-full sm:w-auto px-4 py-3 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                  className="w-full sm:w-auto btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {editingDestination ? 'Mettre à jour' : 'Ajouter'}
                 </button>
                 <button
                   onClick={cancelDestinationEdit}
-                  className={`sm:hidden w-full px-4 py-3 rounded-lg border transition-colors ${
-                    darkMode 
-                      ? 'border-gray-600 text-gray-300 hover:bg-gray-700' 
-                      : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                  }`}
+                  className="sm:hidden w-full btn-outline"
                 >
                   Annuler
                 </button>

@@ -1,13 +1,27 @@
 import { useState } from 'react';
-import { DollarSign, TrendingUp, TrendingDown, Target, Edit3, Save, X, Receipt, Calendar, MapPin } from 'lucide-react';
+import { DollarSign, TrendingUp, TrendingDown, Target, Edit3, Save, X, Receipt, Calendar, MapPin, Trash2, Plus, Edit } from 'lucide-react';
 import { useTrip } from '../context/TripContext';
+import { useDarkMode } from '../context/DarkModeContext';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import type { Expense } from '../types';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function BudgetManager() {
-  const { tripData, updateBudget } = useTrip();
+  const { tripData, updateBudget, updateExpense, deleteExpense, addExpense } = useTrip();
+  const { darkMode } = useDarkMode();
   const [isEditing, setIsEditing] = useState(false);
   const [newBudget, setNewBudget] = useState(tripData.budget.totalBudget);
+  const [editingExpense, setEditingExpense] = useState<string | null>(null);
+  const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
+  const [expenseForm, setExpenseForm] = useState<Partial<Expense>>({
+    title: '',
+    amount: 0,
+    category: 'other',
+    currency: 'EUR',
+    date: new Date(),
+    destinationId: ''
+  });
 
   const handleUpdateBudget = async () => {
     try {
@@ -16,6 +30,62 @@ export default function BudgetManager() {
     } catch (error) {
       console.error('Erreur lors de la mise à jour du budget:', error);
     }
+  };
+
+  const handleDeleteExpense = async (expenseId: string) => {
+    if (window.confirm('Êtes-vous sûr de vouloir supprimer cette dépense ?')) {
+      try {
+        await deleteExpense(expenseId);
+      } catch (error) {
+        console.error('Erreur lors de la suppression:', error);
+      }
+    }
+  };
+
+  const handleSaveExpense = async () => {
+    if (!expenseForm.title?.trim() || !expenseForm.amount) return;
+
+    try {
+      if (editingExpense) {
+        await updateExpense(editingExpense, expenseForm);
+      } else {
+        const newExpense: Expense = {
+          id: uuidv4(),
+          title: expenseForm.title!,
+          amount: expenseForm.amount!,
+          category: expenseForm.category || 'other',
+          currency: expenseForm.currency || 'EUR',
+          date: expenseForm.date || new Date(),
+          destinationId: expenseForm.destinationId || tripData.destinations[0]?.id || ''
+        };
+        await addExpense(newExpense);
+      }
+      setShowAddExpenseModal(false);
+      setEditingExpense(null);
+      setExpenseForm({
+        title: '',
+        amount: 0,
+        category: 'other',
+        currency: 'EUR',
+        date: new Date(),
+        destinationId: ''
+      });
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde:', error);
+    }
+  };
+
+  const handleEditExpense = (expense: Expense) => {
+    setEditingExpense(expense.id);
+    setExpenseForm({
+      title: expense.title,
+      amount: expense.amount,
+      category: expense.category,
+      currency: expense.currency,
+      date: new Date(expense.date),
+      destinationId: expense.destinationId
+    });
+    setShowAddExpenseModal(true);
   };
 
   const budgetPercentage = (tripData.budget.spent / tripData.budget.totalBudget) * 100;
@@ -39,8 +109,26 @@ export default function BudgetManager() {
     return colors[category.toLowerCase() as keyof typeof colors] || 'bg-gray-500';
   };
 
-  // Récupérer toutes les dépenses triées par date
-  const allExpenses = [...tripData.expenses].sort((a, b) =>
+  // Récupérer toutes les dépenses ET les activités avec coût, triées par date
+  const expensesFromExpenses = tripData.expenses.map(exp => ({
+    ...exp,
+    type: 'expense' as const
+  }));
+
+  const expensesFromActivities = tripData.activities
+    .filter(act => act.cost && act.cost > 0)
+    .map(act => ({
+      id: act.id,
+      title: act.title,
+      amount: act.cost!,
+      category: act.category,
+      currency: act.currency || 'EUR',
+      date: act.date,
+      destinationId: act.destinationId,
+      type: 'activity' as const
+    }));
+
+  const allExpenses = [...expensesFromExpenses, ...expensesFromActivities].sort((a, b) =>
     new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 
@@ -251,19 +339,41 @@ export default function BudgetManager() {
       <div className="card p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Dépenses récentes</h3>
-          <span className="text-sm text-gray-500 dark:text-gray-400">
-            {allExpenses.length} {allExpenses.length > 1 ? 'dépenses' : 'dépense'}
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              {allExpenses.length} {allExpenses.length > 1 ? 'dépenses' : 'dépense'}
+            </span>
+            <button
+              onClick={() => {
+                setEditingExpense(null);
+                setExpenseForm({
+                  title: '',
+                  amount: 0,
+                  category: 'other',
+                  currency: 'EUR',
+                  date: new Date(),
+                  destinationId: tripData.destinations[0]?.id || ''
+                });
+                setShowAddExpenseModal(true);
+              }}
+              data-add-expense
+              className="hidden md:flex btn-primary items-center gap-2 text-sm py-2"
+            >
+              <Plus className="w-4 h-4" />
+              Ajouter
+            </button>
+          </div>
         </div>
 
         {allExpenses.length > 0 ? (
           <div className="space-y-2 max-h-[400px] overflow-y-auto scrollbar-hide">
             {allExpenses.slice(0, 10).map((expense) => {
               const destination = tripData.destinations.find(d => d.id === expense.destinationId);
+              const isActivity = expense.type === 'activity';
               return (
                 <div
                   key={expense.id}
-                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors group"
                 >
                   <div className="flex-shrink-0">
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${getCategoryColor(expense.category)}`}>
@@ -276,6 +386,11 @@ export default function BudgetManager() {
                       <h4 className="font-semibold text-gray-900 dark:text-white truncate">
                         {expense.title}
                       </h4>
+                      {isActivity && (
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium">
+                          Activité
+                        </span>
+                      )}
                     </div>
                     <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
                       <Calendar className="w-3 h-3" />
@@ -290,13 +405,34 @@ export default function BudgetManager() {
                     </div>
                   </div>
 
-                  <div className="flex-shrink-0 text-right">
-                    <div className="font-bold text-gray-900 dark:text-white">
-                      {expense.amount.toLocaleString()}
+                  <div className="flex items-center gap-2">
+                    <div className="flex-shrink-0 text-right">
+                      <div className="font-bold text-gray-900 dark:text-white">
+                        {expense.amount.toLocaleString()}
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        {expense.currency}
+                      </div>
                     </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                      {expense.currency}
-                    </div>
+
+                    {!isActivity && (
+                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => handleEditExpense(expense as Expense)}
+                          className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-blue-600 dark:text-blue-400 transition-colors"
+                          title="Modifier"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteExpense(expense.id)}
+                          className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 transition-colors"
+                          title="Supprimer"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               );
@@ -354,6 +490,151 @@ export default function BudgetManager() {
           </div>
         </div>
       </div>
+
+      {/* Modal d'ajout/édition de dépense */}
+      {showAddExpenseModal && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-0 sm:p-4 z-50 animate-fade-in"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowAddExpenseModal(false);
+              setEditingExpense(null);
+            }
+          }}
+        >
+          <div className={`w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-xl border max-h-[90vh] overflow-y-auto animate-slide-up ${darkMode ? 'bg-[#141414] border-[#1f1f1f]' : 'bg-white border-gray-200'}`}>
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className={`text-xl font-semibold ${darkMode ? 'text-gray-50' : 'text-gray-900'}`}>
+                  {editingExpense ? 'Modifier la dépense' : 'Nouvelle dépense'}
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowAddExpenseModal(false);
+                    setEditingExpense(null);
+                  }}
+                  className={`p-2 rounded-xl transition-colors ${darkMode ? 'text-gray-400 hover:text-gray-300 hover:bg-[#1a1a1a]' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}`}
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-gray-500 dark:text-gray-500">
+                    Titre *
+                  </label>
+                  <input
+                    type="text"
+                    value={expenseForm.title}
+                    onChange={(e) => setExpenseForm({ ...expenseForm, title: e.target.value })}
+                    className="input-field"
+                    placeholder="Ex: Restaurant, Taxi, Hôtel..."
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-gray-500 dark:text-gray-500">
+                      Montant *
+                    </label>
+                    <input
+                      type="number"
+                      value={expenseForm.amount}
+                      onChange={(e) => setExpenseForm({ ...expenseForm, amount: Number(e.target.value) })}
+                      className="input-field"
+                      placeholder="0"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-gray-500 dark:text-gray-500">
+                      Devise
+                    </label>
+                    <select
+                      value={expenseForm.currency}
+                      onChange={(e) => setExpenseForm({ ...expenseForm, currency: e.target.value })}
+                      className="input-field"
+                    >
+                      <option value="EUR">EUR</option>
+                      <option value="CNY">CNY</option>
+                      <option value="JPY">JPY</option>
+                      <option value="USD">USD</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-gray-500 dark:text-gray-500">
+                    Catégorie
+                  </label>
+                  <select
+                    value={expenseForm.category}
+                    onChange={(e) => setExpenseForm({ ...expenseForm, category: e.target.value })}
+                    className="input-field"
+                  >
+                    <option value="transport">🚗 Transport</option>
+                    <option value="accommodation">🏨 Hébergement</option>
+                    <option value="food">🍜 Nourriture</option>
+                    <option value="shopping">🛍️ Shopping</option>
+                    <option value="activities">🎯 Activités</option>
+                    <option value="other">📦 Autre</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-gray-500 dark:text-gray-500">
+                    Date
+                  </label>
+                  <input
+                    type="date"
+                    value={format(expenseForm.date || new Date(), 'yyyy-MM-dd')}
+                    onChange={(e) => setExpenseForm({ ...expenseForm, date: new Date(e.target.value) })}
+                    className="input-field"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-gray-500 dark:text-gray-500">
+                    Destination
+                  </label>
+                  <select
+                    value={expenseForm.destinationId}
+                    onChange={(e) => setExpenseForm({ ...expenseForm, destinationId: e.target.value })}
+                    className="input-field"
+                  >
+                    <option value="">Sélectionner une destination</option>
+                    {tripData.destinations.map((dest) => (
+                      <option key={dest.id} value={dest.id}>
+                        {dest.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => {
+                    setShowAddExpenseModal(false);
+                    setEditingExpense(null);
+                  }}
+                  className="flex-1 btn-outline"
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={handleSaveExpense}
+                  disabled={!expenseForm.title?.trim() || !expenseForm.amount}
+                  className="flex-1 btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {editingExpense ? 'Modifier' : 'Ajouter'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
