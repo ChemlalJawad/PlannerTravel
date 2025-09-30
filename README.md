@@ -67,7 +67,7 @@ Une application moderne de gestion de voyages construite avec React 19, TypeScri
 ## 📦 Installation
 
 ### Prérequis
-- Node.js 22.11.0 (voir `.nvmrc`)
+- Node.js 22.12.0+ (voir `.nvmrc`)
 - npm ou yarn
 
 ### Développement Local
@@ -187,7 +187,7 @@ npm run type-check    # Vérification TypeScript
 ### Problèmes Courants
 
 **Erreur de build TypeScript** :
-- Vérifiez la version Node.js (22.11.0)
+- Vérifiez la version Node.js (22.12.0+)
 - Supprimez `node_modules` et réinstallez
 
 **Problème Supabase** :

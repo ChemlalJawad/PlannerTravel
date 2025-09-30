@@ -8,7 +8,7 @@ L'application est maintenant configurée pour être déployée sur Netlify avec 
 
 #### `.nvmrc`
 ```
-22.11.0
+22.12.0
 ```
 Spécifie la version Node.js recommandée pour le déploiement.
 
@@ -19,7 +19,7 @@ Spécifie la version Node.js recommandée pour le déploiement.
   command = "npm run build"
 
 [build.environment]
-  NODE_VERSION = "22.11.0"
+  NODE_VERSION = "22.12.0"
 
 [[redirects]]
   from = "/*"
@@ -45,7 +45,7 @@ VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
 2. **Configuration de Build**
    - Build command: `npm run build`
    - Publish directory: `dist`
-   - Node.js version: `22.11.0` (automatiquement détectée via .nvmrc)
+   - Node.js version: `22.12.0` (automatiquement détectée via .nvmrc)
 
 3. **Variables d'Environnement**
    - Ajoutez vos variables Supabase dans Site settings > Environment variables
@@ -60,7 +60,7 @@ Les erreurs TypeScript suivantes ont été résolues :
 - ✅ Types Supabase corrigés (client sans typage strict)
 - ✅ Imports non utilisés supprimés
 - ✅ Fichiers corrompus supprimés
-- ✅ Version Node.js spécifiée (22.11.0)
+- ✅ Version Node.js spécifiée (22.12.0)
 - ✅ Configuration Netlify complète
 
 ### Test Local
@@ -89,5 +89,5 @@ L'application comprend :
 En cas de problème de déploiement :
 1. Vérifiez les logs de build dans Netlify
 2. Assurez-vous que les variables d'environnement sont correctes
-3. Vérifiez que la version Node.js est 22.11.0
+3. Vérifiez que la version Node.js est 22.12.0+
 4. Contactez le support si nécessaire
