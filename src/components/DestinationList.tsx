@@ -217,17 +217,17 @@ export default function DestinationList() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
-        <h1 className="section-title">Lieux & Destinations</h1>
-        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="section-title mb-0">Lieux & Destinations</h1>
+        <div className="flex gap-2">
           <ImportCSV />
           <button
             onClick={handleAddDestination}
             data-add-destination
-            className="btn-primary w-full sm:w-auto"
+            className="hidden sm:flex btn-primary items-center justify-center gap-2 px-4 py-2.5"
           >
-            <Plus className="w-4 h-4 mr-2" />
-            Ajouter une destination
+            <Plus className="w-4 h-4" />
+            <span className="font-semibold">Ajouter</span>
           </button>
         </div>
       </div>
@@ -267,21 +267,28 @@ export default function DestinationList() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleEditDestination(destination)}
-                        className="btn-outline p-2"
+                        className={`flex-1 sm:flex-none px-3 py-2 sm:p-2 rounded-xl border transition-all active:scale-95 ${
+                          darkMode
+                            ? 'bg-blue-600 hover:bg-blue-700 text-white border-blue-600'
+                            : 'bg-blue-600 hover:bg-blue-700 text-white border-blue-600'
+                        }`}
                         title="Modifier la destination"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <div className="flex items-center justify-center gap-2">
+                          <Edit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                          <span className="sm:hidden text-sm font-medium">Modifier</span>
+                        </div>
                       </button>
                       <button
                         onClick={() => handleDeleteDestination(destination.id)}
-                        className={`p-2 rounded-xl border transition-colors ${
+                        className={`px-3 py-2 sm:p-2 rounded-xl border transition-all active:scale-95 ${
                           darkMode
-                            ? 'bg-[#1a1a1a] hover:bg-red-900/20 text-red-400 border-[#2a2a2a] hover:border-red-900'
-                            : 'bg-red-50 hover:bg-red-100 text-red-600 border-red-200 hover:border-red-300'
+                            ? 'bg-red-600 hover:bg-red-700 text-white border-red-600'
+                            : 'bg-red-600 hover:bg-red-700 text-white border-red-600'
                         }`}
                         title="Supprimer la destination"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       </button>
                     </div>
                   </div>

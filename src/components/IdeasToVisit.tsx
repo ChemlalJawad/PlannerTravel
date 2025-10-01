@@ -227,20 +227,20 @@ export default function IdeasToVisit() {
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Destination
           </label>
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex flex-wrap gap-2">
             {tripData.destinations.map(dest => (
               <button
                 key={dest.id}
                 onClick={() => setSelectedDestination(dest.name)}
-                className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all ${
+                className={`px-3 py-2 sm:px-4 rounded-lg font-medium transition-all text-sm sm:text-base ${
                   selectedDestination === dest.name
-                    ? 'bg-purple-600 text-white shadow-lg scale-105'
+                    ? 'bg-purple-600 text-white shadow-lg'
                     : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-700'
                 }`}
               >
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4" />
-                  {dest.name}
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                  <span className="truncate max-w-[120px] sm:max-w-none">{dest.name}</span>
                 </div>
               </button>
             ))}
@@ -287,39 +287,39 @@ export default function IdeasToVisit() {
 
       {/* Ideas Grid */}
       {filteredIdeas.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {filteredIdeas.map((idea, idx) => (
             <div
               key={idx}
-              className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-all hover:border-purple-300 dark:hover:border-purple-700"
+              className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3 sm:p-4 hover:shadow-lg transition-all hover:border-purple-300 dark:hover:border-purple-700"
             >
               {/* Header */}
               <div className="flex items-start justify-between mb-2">
-                <div className="flex items-center gap-2 flex-1">
-                  <span className="text-2xl">{categoryIcons[idea.category]}</span>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                  <span className="text-xl sm:text-2xl flex-shrink-0">{categoryIcons[idea.category]}</span>
+                  <h3 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-white line-clamp-2">
                     {idea.name}
                   </h3>
                 </div>
               </div>
 
               {/* Description */}
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-3">
                 {idea.description}
               </p>
 
               {/* Details */}
-              <div className="space-y-1 mb-3 text-sm">
+              <div className="space-y-1 mb-3 text-xs sm:text-sm">
                 {idea.estimatedCost && (
-                  <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                  <div className="flex items-center gap-1.5 sm:gap-2 text-gray-700 dark:text-gray-300">
                     <span className="font-medium">💰</span>
-                    <span>{idea.estimatedCost}</span>
+                    <span className="truncate">{idea.estimatedCost}</span>
                   </div>
                 )}
                 {idea.bestTime && (
-                  <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                  <div className="flex items-center gap-1.5 sm:gap-2 text-gray-700 dark:text-gray-300">
                     <span className="font-medium">⏰</span>
-                    <span>{idea.bestTime}</span>
+                    <span className="truncate">{idea.bestTime}</span>
                   </div>
                 )}
               </div>
@@ -328,19 +328,19 @@ export default function IdeasToVisit() {
               <div className="flex gap-2">
                 <button
                   onClick={() => handleAddToActivities(idea)}
-                  className="flex-1 px-3 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 px-2 py-1.5 sm:px-3 sm:py-2 bg-purple-600 text-white rounded-lg text-xs sm:text-sm font-medium hover:bg-purple-700 transition-colors flex items-center justify-center gap-1 sm:gap-2"
                 >
-                  <Plus className="w-4 h-4" />
-                  Ajouter
+                  <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span>Ajouter</span>
                 </button>
                 {idea.link && (
                   <a
                     href={idea.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                    className="px-2 py-1.5 sm:px-3 sm:py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center justify-center"
                   >
-                    <ExternalLink className="w-4 h-4" />
+                    <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </a>
                 )}
               </div>

@@ -374,60 +374,65 @@ export default function BudgetManager() {
               return (
                 <div
                   key={expense.id}
-                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors group"
+                  className="flex items-start sm:items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors group"
                 >
                   <div className="flex-shrink-0">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${getCategoryColor(expense.category)}`}>
-                      <span className="text-lg">{getCategoryIcon(expense.category)}</span>
+                    <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center ${getCategoryColor(expense.category)}`}>
+                      <span className="text-base sm:text-lg">{getCategoryIcon(expense.category)}</span>
                     </div>
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <h4 className="font-semibold text-gray-900 dark:text-white truncate">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-0.5">
+                      <h4 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-white truncate">
                         {expense.title}
                       </h4>
                       {isActivity && (
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium">
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium w-fit">
                           Activité
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                      <Calendar className="w-3 h-3" />
-                      <span>{format(new Date(expense.date), 'dd MMM yyyy', { locale: fr })}</span>
+                    <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-xs text-gray-500 dark:text-gray-400">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3" />
+                        <span className="hidden sm:inline">{format(new Date(expense.date), 'dd MMM yyyy', { locale: fr })}</span>
+                        <span className="sm:hidden">{format(new Date(expense.date), 'dd/MM', { locale: fr })}</span>
+                      </div>
                       {destination && (
                         <>
-                          <span>•</span>
-                          <MapPin className="w-3 h-3" />
-                          <span>{destination.name}</span>
+                          <span className="hidden sm:inline">•</span>
+                          <div className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3" />
+                            <span className="truncate max-w-[100px] sm:max-w-none">{destination.name}</span>
+                          </div>
                         </>
                       )}
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1 sm:gap-2">
                     <div className="flex-shrink-0 text-right">
-                      <div className="font-bold text-gray-900 dark:text-white text-sm">
+                      <div className="font-bold text-xs sm:text-sm text-gray-900 dark:text-white whitespace-nowrap">
                         {formatPriceWithOriginal(expense.amount, expense.currency)}
                       </div>
                     </div>
 
                     {!isActivity && (
-                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => handleEditExpense(expense as Expense)}
-                          className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-blue-600 dark:text-blue-400 transition-colors"
+                          className="p-1 sm:p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-blue-600 dark:text-blue-400 transition-colors"
                           title="Modifier"
                         >
-                          <Edit className="w-4 h-4" />
+                          <Edit className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         </button>
                         <button
                           onClick={() => handleDeleteExpense(expense.id)}
-                          className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 transition-colors"
+                          className="p-1 sm:p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 transition-colors"
                           title="Supprimer"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         </button>
                       </div>
                     )}

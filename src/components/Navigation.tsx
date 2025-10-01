@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calendar, MapPin, PieChart, Plus, DollarSign, Moon, Sun, Sparkles, Map } from 'lucide-react';
+import { Calendar, MapPin, PieChart, Plus, DollarSign, Moon, Sun, Sparkles, Map, Camera } from 'lucide-react';
 import { useDarkMode } from '../context/DarkModeContext';
 import Dashboard from './Dashboard';
 import DestinationList from './DestinationList';
@@ -64,6 +64,18 @@ export default function Navigation() {
       const addDestinationButton = document.querySelector('[data-add-destination]') as HTMLButtonElement;
       if (addDestinationButton) {
         addDestinationButton.click();
+      }
+    }, 100);
+  };
+
+  const handleAddPhoto = () => {
+    setActiveTab('calendar');
+    setShowAddMenu(false);
+    // Déclencher l'ouverture de la modale photo
+    setTimeout(() => {
+      const addPhotoButton = document.querySelector('[data-add-photo]') as HTMLButtonElement;
+      if (addPhotoButton) {
+        addPhotoButton.click();
       }
     }, 100);
   };
@@ -225,7 +237,7 @@ export default function Navigation() {
         <div className="relative">
           {/* Menu d'ajout minimaliste */}
           {showAddMenu && (
-            <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 z-50 animate-scale-in">
+            <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-50 animate-scale-in">
               <div className={`${
                 darkMode ? 'bg-[#141414]' : 'bg-white'
               } rounded-3xl shadow-2xl border ${
@@ -233,6 +245,27 @@ export default function Navigation() {
               } p-2 min-w-[260px] backdrop-blur-xl ${
                 darkMode ? 'bg-[#141414]/95' : 'bg-white/95'
               }`}>
+                <button
+                  onClick={handleAddPhoto}
+                  className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all active:scale-98 ${
+                    darkMode
+                      ? 'hover:bg-[#1a1a1a] text-gray-50'
+                      : 'hover:bg-gray-50 text-black'
+                  }`}
+                >
+                  <div className={`w-11 h-11 rounded-2xl flex items-center justify-center ${
+                    darkMode ? 'bg-purple-900/30' : 'bg-purple-100'
+                  }`}>
+                    <Camera className={`w-5 h-5 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`} />
+                  </div>
+                  <div className="text-left flex-1">
+                    <div className="font-medium">Photo</div>
+                    <div className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                      Analyser une photo
+                    </div>
+                  </div>
+                </button>
+
                 <button
                   onClick={handleAddExpense}
                   className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all active:scale-98 ${
@@ -309,9 +342,9 @@ export default function Navigation() {
 
           {/* Barre de navigation minimaliste */}
           <div className="flex items-center h-20 safe-area-inset-bottom relative px-4">
-            {/* Onglets à gauche (2 onglets) */}
+            {/* Onglets à gauche (3 onglets) */}
             <div className="flex-1 flex gap-2">
-              {visibleTabs.slice(0, 2).map((tab) => {
+              {visibleTabs.slice(0, 3).map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
 
@@ -356,9 +389,9 @@ export default function Navigation() {
               </button>
             </div>
 
-            {/* Onglets à droite (4 onglets) */}
+            {/* Onglets à droite (3 onglets) */}
             <div className="flex-1 flex gap-2">
-              {visibleTabs.slice(2, 6).map((tab) => {
+              {visibleTabs.slice(3, 6).map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
 

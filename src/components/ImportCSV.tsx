@@ -302,10 +302,10 @@ export default function ImportCSV() {
     <>
       <button
         onClick={() => setShowModal(true)}
-        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-4 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-700"
       >
-        <Upload className="w-4 h-4" />
-        Importer CSV
+        <Upload className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+        <span className="text-sm sm:text-base font-medium">CSV</span>
       </button>
 
       {showModal && (
