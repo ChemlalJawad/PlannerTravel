@@ -115,13 +115,16 @@ export default function Navigation() {
       }`}>
         <div className="px-6 py-5 safe-area-inset-top">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className={`text-xl font-semibold tracking-tight ${darkMode ? 'text-gray-50' : 'text-black'}`}>
-                Voyage
-              </h1>
-              <p className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
-                Chine & Japon 2026
-              </p>
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">✈️</span>
+              <div>
+                <h1 className={`text-xl font-semibold tracking-tight ${darkMode ? 'text-gray-50' : 'text-black'}`}>
+                  TravelPlanner
+                </h1>
+                <p className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                  Chine & Japon 2026
+                </p>
+              </div>
             </div>
             {/* Toggle mode sombre mobile */}
             <button
@@ -145,9 +148,10 @@ export default function Navigation() {
       }`}>
         <div className="max-w-7xl mx-auto px-8">
           <div className="flex justify-between items-center h-20">
-            <div>
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">✈️</span>
               <h1 className={`text-2xl font-semibold tracking-tight ${darkMode ? 'text-gray-50' : 'text-black'}`}>
-                Voyage
+                TravelPlanner
               </h1>
             </div>
 
@@ -200,6 +204,15 @@ export default function Navigation() {
       }`}>
         {renderContent()}
       </main>
+
+      {/* Footer copyright */}
+      <footer className={`py-6 text-center border-t ${
+        darkMode ? 'bg-[#0a0a0a] border-[#1f1f1f] text-gray-500' : 'bg-white border-gray-100 text-gray-400'
+      }`}>
+        <p className="text-sm">
+          © 2025 TravelPlanner - Développé par <span className={`font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Jawad Chemlal</span>
+        </p>
+      </footer>
 
       {/* Tab bar mobile minimaliste */}
       <nav className={`fixed bottom-0 left-0 right-0 backdrop-blur-xl md:hidden z-40 border-t ${

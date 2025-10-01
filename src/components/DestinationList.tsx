@@ -6,9 +6,10 @@ import { fr } from 'date-fns/locale';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import type { Activity } from '../types';
+import ImportCSV from './ImportCSV';
 
 export default function DestinationList() {
-  const { tripData, addDestination, updateDestination, deleteDestination, updateActivity, deleteActivity } = useTrip();
+  const { tripData, addDestination, updateDestination, deleteDestination, updateActivity, deleteActivity, updateExpense } = useTrip();
   const { darkMode } = useDarkMode();
   
   // États pour la gestion des destinations
@@ -47,27 +48,98 @@ export default function DestinationList() {
     setShowDestinationModal(true);
   };
 
+  const findDuplicateDestination = (name: string, startDate: Date, excludeId?: string): any | null => {
+    const normalizedName = name.toLowerCase().trim();
+    const targetDate = new Date(startDate);
+    targetDate.setHours(0, 0, 0, 0);
+
+    return tripData.destinations.find(dest => {
+      if (excludeId && dest.id === excludeId) return false; // Exclure la destination en cours d'édition
+
+      const destName = dest.name.toLowerCase().trim();
+      const destDate = new Date(dest.startDate);
+      destDate.setHours(0, 0, 0, 0);
+
+      return destName === normalizedName && destDate.getTime() === targetDate.getTime();
+    }) || null;
+  };
+
   const handleSaveDestination = async () => {
     if (!newDestination.name.trim()) return;
 
     try {
-      if (editingDestination) {
+      // Vérifier s'il existe déjà une destination avec le même nom et la même date
+      const duplicate = findDuplicateDestination(
+        newDestination.name,
+        newDestination.startDate,
+        editingDestination || undefined
+      );
+
+      if (duplicate && editingDestination && duplicate.id !== editingDestination) {
+        // On a trouvé un doublon avec une autre destination
+        const confirmMerge = window.confirm(
+          `Une destination "${duplicate.name}" existe déjà pour cette date (${new Date(duplicate.startDate).toLocaleDateString('fr-FR')}).\n\n` +
+          `Voulez-vous fusionner les activités de ces deux destinations ?\n\n` +
+          `- OUI : Les activités seront combinées et la destination actuelle sera supprimée\n` +
+          `- NON : La modification sera annulée`
+        );
+
+        if (confirmMerge) {
+          // Fusionner : transférer toutes les activités vers la destination existante
+          const activitiesToMove = tripData.activities.filter(
+            activity => activity.destinationId === editingDestination
+          );
+
+          // Déplacer chaque activité vers la destination de destination
+          for (const activity of activitiesToMove) {
+            await updateActivity(activity.id, {
+              destinationId: duplicate.id,
+              location: duplicate.name
+            });
+          }
+
+          // Déplacer les dépenses aussi
+          const expensesToMove = tripData.expenses.filter(
+            expense => expense.destinationId === editingDestination
+          );
+
+          for (const expense of expensesToMove) {
+            await updateExpense(expense.id, {
+              destinationId: duplicate.id
+            });
+          }
+
+          // Supprimer la destination actuelle (maintenant vide)
+          await deleteDestination(editingDestination);
+
+          alert(`✅ Fusion réussie ! Les activités et dépenses ont été transférées vers "${duplicate.name}".`);
+        }
+      } else if (editingDestination) {
+        // Pas de doublon, mise à jour normale
         await updateDestination(editingDestination, {
           ...newDestination,
           startDate: newDestination.startDate,
           endDate: newDestination.endDate
         });
       } else {
+        // Création d'une nouvelle destination
+        if (duplicate) {
+          alert(`⚠️ Une destination "${duplicate.name}" existe déjà pour cette date. Veuillez choisir un autre nom ou une autre date.`);
+          return;
+        }
+
         const destinationWithId = {
           ...newDestination,
           id: uuidv4()
         };
         await addDestination(destinationWithId);
       }
+
       setShowDestinationModal(false);
       setEditingDestination(null);
     } catch (error) {
       console.error('Erreur lors de la sauvegarde:', error);
+      alert('❌ Erreur lors de la sauvegarde. Veuillez réessayer.');
     }
   };
 
@@ -148,14 +220,17 @@ export default function DestinationList() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
         <h1 className="section-title">Lieux & Destinations</h1>
-        <button
-          onClick={handleAddDestination}
-          data-add-destination
-          className="btn-primary w-full sm:w-auto"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Ajouter une destination
-        </button>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <ImportCSV />
+          <button
+            onClick={handleAddDestination}
+            data-add-destination
+            className="btn-primary w-full sm:w-auto"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Ajouter une destination
+          </button>
+        </div>
       </div>
         
       <div className="space-y-6">
