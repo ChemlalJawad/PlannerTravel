@@ -131,10 +131,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 /* Fix pour les select en mode sombre */
 select {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
 }
 
 .dark select {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%9ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
 }
 
 /* Amélioration tactile mobile */
@@ -269,4 +276,15 @@ select {
 
 .text-muted {
   @apply text-gray-400 dark:text-gray-600;
+}
+
+/* Fix z-index pour Leaflet - doit rester sous le menu mobile */
+.leaflet-container,
+.leaflet-pane,
+.leaflet-map-pane {
+  z-index: 1 !important;
+}
+
+.leaflet-control {
+  z-index: 10 !important;
 }

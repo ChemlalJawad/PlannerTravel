@@ -45,6 +45,7 @@ export interface Database {
           cost: number | null;
           currency: 'EUR' | 'CNY' | 'JPY';
           is_completed: boolean;
+          google_maps_url: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -59,6 +60,7 @@ export interface Database {
           cost?: number | null;
           currency: 'EUR' | 'CNY' | 'JPY';
           is_completed?: boolean;
+          google_maps_url?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -73,6 +75,7 @@ export interface Database {
           cost?: number | null;
           currency?: 'EUR' | 'CNY' | 'JPY';
           is_completed?: boolean;
+          google_maps_url?: string | null;
           created_at?: string;
           updated_at?: string;
         };

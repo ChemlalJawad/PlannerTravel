@@ -6,6 +6,7 @@ import { fr } from 'date-fns/locale';
 import type { Activity } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 import PhotoUpload from './PhotoUpload';
+import { formatPriceWithOriginal } from '../utils/currency';
 
 export default function ActivityCalendar() {
   const { tripData, updateActivity, addActivity, deleteActivity } = useTrip();
@@ -200,6 +201,7 @@ export default function ActivityCalendar() {
 
     setNewActivity(prev => ({
       ...prev,
+      destinationId: analysis.destinationId || prev.destinationId,
       title: analysis.title || '',
       description: analysis.description || '',
       date: analysis.date || defaultDate,
@@ -491,7 +493,7 @@ export default function ActivityCalendar() {
                               </span>
                               
                               {activity.cost && (
-                                <span>💰 {activity.cost} {activity.currency}</span>
+                                <span>💰 {formatPriceWithOriginal(activity.cost, activity.currency)}</span>
                               )}
                             </div>
                           </div>
@@ -603,7 +605,7 @@ export default function ActivityCalendar() {
                                '📌 Autre'}
                             </span>
                             {activity.cost && (
-                              <span>💰 {activity.cost} {activity.currency}</span>
+                              <span>💰 {formatPriceWithOriginal(activity.cost, activity.currency)}</span>
                             )}
                           </div>
                         </div>
@@ -840,6 +842,7 @@ export default function ActivityCalendar() {
         <PhotoUpload
           onActivityCreated={handlePhotoAnalyzed}
           onClose={() => setShowPhotoUpload(false)}
+          destinations={tripData.destinations}
         />
       )}
     </div>

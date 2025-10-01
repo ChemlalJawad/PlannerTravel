@@ -3,11 +3,9 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet'
 import { Icon, LatLngExpression } from 'leaflet';
 import { useTrip } from '../context/TripContext';
 import { useDarkMode } from '../context/DarkModeContext';
-import { MapPin, Calendar, Activity as ActivityIcon, AlertCircle, Utensils, Eye, Hotel, ShoppingBag, Plane, Camera } from 'lucide-react';
+import { MapPin, Calendar, Activity as ActivityIcon, AlertCircle, Utensils, Eye, Hotel, ShoppingBag, Plane } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 import type { Activity } from '../types';
-import PhotoUpload from './PhotoUpload';
-import { v4 as uuidv4 } from 'uuid';
 
 // Fix pour les icônes Leaflet par défaut
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -172,13 +170,12 @@ const parseGoogleMapsUrl = (url: string): [number, number] | null => {
 };
 
 export default function MapView() {
-  const { tripData, addActivity } = useTrip();
+  const { tripData } = useTrip();
   const { darkMode } = useDarkMode();
   const [destinationsWithCoords, setDestinationsWithCoords] = useState<DestinationWithCoords[]>([]);
   const [activitiesWithCoords, setActivitiesWithCoords] = useState<ActivityWithCoords[]>([]);
   const [missingCoords, setMissingCoords] = useState<string[]>([]);
   const [activitiesWithBadUrls, setActivitiesWithBadUrls] = useState<Activity[]>([]);
-  const [showPhotoUpload, setShowPhotoUpload] = useState(false);
 
   useEffect(() => {
     // Mapper les destinations avec leurs coordonnées
@@ -307,75 +304,19 @@ export default function MapView() {
     return labels[category] || category;
   };
 
-  const handlePhotoAnalyzed = async (analysis: any) => {
-    // Créer automatiquement une activité depuis la photo
-    let destinationId = tripData.destinations[0]?.id || '';
-
-    // Trouver la destination basée sur la date si disponible
-    if (analysis.date) {
-      const matchingDest = tripData.destinations.find(dest => {
-        const startDate = new Date(dest.startDate);
-        const endDate = new Date(dest.endDate);
-        const photoDate = new Date(analysis.date);
-        return photoDate >= startDate && photoDate <= endDate;
-      });
-      if (matchingDest) destinationId = matchingDest.id;
-    }
-
-    const googleMapsUrl = analysis.latitude && analysis.longitude
-      ? `https://www.google.com/maps?q=${analysis.latitude},${analysis.longitude}`
-      : undefined;
-
-    const activity: Activity = {
-      id: uuidv4(),
-      destinationId,
-      title: analysis.title || 'Lieu depuis photo',
-      description: analysis.description || '',
-      date: analysis.date || new Date(),
-      time: '',
-      category: analysis.category || 'other',
-      cost: analysis.estimatedPrice,
-      currency: analysis.currency || 'EUR',
-      isCompleted: false,
-      googleMapsUrl
-    };
-
-    try {
-      await addActivity(activity);
-      setShowPhotoUpload(false);
-      alert('✅ Activité créée avec succès depuis la photo !');
-    } catch (error) {
-      console.error('Erreur lors de la création:', error);
-      alert('❌ Erreur lors de la création de l\'activité');
-    }
-  };
-
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center gap-2 mb-2">
+        <MapPin className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
         <div>
-          <div className="flex items-center gap-2 mb-2">
-            <MapPin className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Carte du voyage
-            </h1>
-          </div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Carte du voyage
+          </h1>
           <p className="text-gray-600 dark:text-gray-400">
             Visualisez votre itinéraire sur la carte interactive
           </p>
         </div>
-        <button
-          onClick={() => setShowPhotoUpload(true)}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-            darkMode
-              ? 'bg-purple-600 hover:bg-purple-700 text-white'
-              : 'bg-purple-600 hover:bg-purple-700 text-white'
-          }`}
-        >
-          <Camera className="w-5 h-5" />
-          <span>Ajouter une photo</span>
-        </button>
       </div>
 
       {/* Légende */}
@@ -472,13 +413,14 @@ export default function MapView() {
       )}
 
       {/* Carte */}
-      <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-lg h-[600px]">
+      <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-lg h-[600px] relative" style={{ zIndex: 1 }}>
         {destinationsWithCoords.length > 0 ? (
           <MapContainer
             center={centerMap()}
             zoom={calculateZoom()}
             className="h-full w-full"
             scrollWheelZoom={true}
+            style={{ zIndex: 1 }}
           >
             {/* Tuile OpenStreetMap */}
             <TileLayer
@@ -655,13 +597,6 @@ export default function MapView() {
         </div>
       </div>
 
-      {/* Photo Upload Modal */}
-      {showPhotoUpload && (
-        <PhotoUpload
-          onActivityCreated={handlePhotoAnalyzed}
-          onClose={() => setShowPhotoUpload(false)}
-        />
-      )}
     </div>
   );
 }

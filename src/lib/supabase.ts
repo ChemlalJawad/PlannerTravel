@@ -62,7 +62,7 @@ export const supabaseHelpers = {
   },
 
   async saveActivity(activity: any) {
-    const { data, error } = await supabase
+    const { data, error} = await supabase
       .from('activities')
       .upsert({
         id: activity.id,
@@ -75,10 +75,11 @@ export const supabaseHelpers = {
         cost: activity.cost,
         currency: activity.currency,
         is_completed: activity.isCompleted,
+        google_maps_url: activity.googleMapsUrl,
       })
       .select()
       .single();
-    
+
     if (error) throw error;
     return data;
   },

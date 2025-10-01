@@ -112,7 +112,7 @@ export default function Navigation() {
       <SyncStatus />
 
       {/* Header mobile minimaliste */}
-      <header className={`backdrop-blur-xl border-b sticky top-0 z-30 md:hidden ${
+      <header className={`backdrop-blur-xl border-b sticky top-0 z-20 md:hidden ${
         darkMode
           ? 'bg-[#0a0a0a]/90 border-[#1f1f1f]'
           : 'bg-white/90 border-gray-100'

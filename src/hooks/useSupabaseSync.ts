@@ -49,6 +49,7 @@ export function useSupabaseSync() {
           cost: a.cost || undefined,
           currency: a.currency,
           isCompleted: a.is_completed,
+          googleMapsUrl: a.google_maps_url || undefined,
         })) || initialTripData.activities,
 
         expenses: expenses?.map((e: ExpenseRow) => ({

@@ -15,19 +15,24 @@ interface PhotoAnalysis {
   title?: string;
   isFood?: boolean;
   isAttraction?: boolean;
+  destinationId?: string;
 }
 
 interface PhotoUploadProps {
   onActivityCreated?: (analysis: PhotoAnalysis) => void;
   onClose?: () => void;
+  destinations?: Array<{ id: string; name: string; country: string }>;
 }
 
-export default function PhotoUpload({ onActivityCreated, onClose }: PhotoUploadProps) {
+export default function PhotoUpload({ onActivityCreated, onClose, destinations = [] }: PhotoUploadProps) {
   const { darkMode } = useDarkMode();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<PhotoAnalysis | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [selectedDestinationId, setSelectedDestinationId] = useState<string>('');
+  const [editedPrice, setEditedPrice] = useState<number | undefined>(undefined);
+  const [editedCurrency, setEditedCurrency] = useState<'EUR' | 'CNY' | 'JPY'>('EUR');
 
   const analyzePhotoWithAI = async (imageBase64: string): Promise<Partial<PhotoAnalysis>> => {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -180,6 +185,8 @@ export default function PhotoUpload({ onActivityCreated, onClose }: PhotoUploadP
         };
 
         setAnalysis(combinedAnalysis);
+        setEditedPrice(combinedAnalysis.estimatedPrice);
+        setEditedCurrency(combinedAnalysis.currency || 'EUR');
         setIsAnalyzing(false);
       };
       readerForAI.readAsDataURL(file);
@@ -405,20 +412,41 @@ export default function PhotoUpload({ onActivityCreated, onClose }: PhotoUploadP
                       </div>
                     )}
 
-                    {/* Price estimate */}
-                    {analysis.estimatedPrice && (
-                      <div className="flex items-start gap-3">
-                        <DollarSign className={`w-5 h-5 mt-0.5 ${darkMode ? 'text-yellow-400' : 'text-yellow-600'}`} />
-                        <div className="flex-1">
-                          <p className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                            💰 Prix estimé
-                          </p>
-                          <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                            ~{analysis.estimatedPrice} {analysis.currency}
-                          </p>
+                    {/* Price estimate - Editable */}
+                    <div className="flex items-start gap-3">
+                      <DollarSign className={`w-5 h-5 mt-0.5 ${darkMode ? 'text-yellow-400' : 'text-yellow-600'}`} />
+                      <div className="flex-1">
+                        <p className={`font-medium mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                          💰 Prix estimé (modifiable)
+                        </p>
+                        <div className="flex gap-2">
+                          <input
+                            type="number"
+                            value={editedPrice || ''}
+                            onChange={(e) => setEditedPrice(e.target.value ? parseFloat(e.target.value) : undefined)}
+                            placeholder="Prix"
+                            className={`flex-1 px-3 py-2 rounded-lg border ${
+                              darkMode
+                                ? 'bg-gray-700 border-gray-600 text-white'
+                                : 'bg-white border-gray-300 text-gray-900'
+                            }`}
+                          />
+                          <select
+                            value={editedCurrency}
+                            onChange={(e) => setEditedCurrency(e.target.value as 'EUR' | 'CNY' | 'JPY')}
+                            className={`px-3 py-2 pr-8 rounded-lg border ${
+                              darkMode
+                                ? 'bg-gray-700 border-gray-600 text-white'
+                                : 'bg-white border-gray-300 text-gray-900'
+                            }`}
+                          >
+                            <option value="EUR">EUR €</option>
+                            <option value="CNY">CNY ¥</option>
+                            <option value="JPY">JPY ¥</option>
+                          </select>
                         </div>
                       </div>
-                    )}
+                    </div>
 
                     {/* No GPS warning */}
                     {!analysis.latitude && !analysis.longitude && (
@@ -431,6 +459,34 @@ export default function PhotoUpload({ onActivityCreated, onClose }: PhotoUploadP
                         </p>
                       </div>
                     )}
+                  </div>
+
+                  {/* Sélecteur de destination */}
+                  <div className={`mt-4 p-4 rounded-lg border-2 ${
+                    darkMode ? 'bg-indigo-900/20 border-indigo-700' : 'bg-indigo-50 border-indigo-300'
+                  }`}>
+                    <label className={`block text-sm font-semibold mb-2 ${darkMode ? 'text-indigo-200' : 'text-indigo-900'}`}>
+                      🗺️ Destination (optionnel)
+                    </label>
+                    <select
+                      value={selectedDestinationId}
+                      onChange={(e) => setSelectedDestinationId(e.target.value)}
+                      className={`w-full p-3 pr-10 rounded-lg border ${
+                        darkMode
+                          ? 'bg-gray-700 border-gray-600 text-white'
+                          : 'bg-white border-gray-300 text-gray-900'
+                      }`}
+                    >
+                      <option value="">Aucune destination</option>
+                      {destinations.map((dest) => (
+                        <option key={dest.id} value={dest.id}>
+                          {dest.name} ({dest.country})
+                        </option>
+                      ))}
+                    </select>
+                    <p className={`text-xs mt-2 ${darkMode ? 'text-indigo-300' : 'text-indigo-700'}`}>
+                      💡 Associez cette activité à une ville/destination spécifique
+                    </p>
                   </div>
 
                   {/* Note IA */}
@@ -480,7 +536,13 @@ export default function PhotoUpload({ onActivityCreated, onClose }: PhotoUploadP
                     </button>
                     <button
                       onClick={() => {
-                        onActivityCreated?.(analysis);
+                        const analysisWithDestination = {
+                          ...analysis,
+                          destinationId: selectedDestinationId || undefined,
+                          estimatedPrice: editedPrice,
+                          currency: editedCurrency
+                        };
+                        onActivityCreated?.(analysisWithDestination);
                         onClose?.();
                       }}
                       className={`flex-1 py-3 rounded-lg font-medium transition-colors ${

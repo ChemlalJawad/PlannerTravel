@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import type { Expense } from '../types';
 import { v4 as uuidv4 } from 'uuid';
+import { formatPriceWithOriginal } from '../utils/currency';
 
 export default function BudgetManager() {
   const { tripData, updateBudget, updateExpense, deleteExpense, addExpense } = useTrip();
@@ -407,11 +408,8 @@ export default function BudgetManager() {
 
                   <div className="flex items-center gap-2">
                     <div className="flex-shrink-0 text-right">
-                      <div className="font-bold text-gray-900 dark:text-white">
-                        {expense.amount.toLocaleString()}
-                      </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
-                        {expense.currency}
+                      <div className="font-bold text-gray-900 dark:text-white text-sm">
+                        {formatPriceWithOriginal(expense.amount, expense.currency)}
                       </div>
                     </div>
 
