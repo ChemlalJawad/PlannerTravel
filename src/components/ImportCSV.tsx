@@ -13,7 +13,6 @@ interface CSVRow {
 export default function ImportCSV() {
   const { tripData, addDestination, addActivity } = useTrip();
   const [showModal, setShowModal] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<CSVRow[]>([]);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
@@ -58,7 +57,6 @@ export default function ImportCSV() {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
 
-    setFile(selectedFile);
     setError(null);
     setSuccess(false);
 
@@ -205,8 +203,7 @@ export default function ImportCSV() {
                 startDate: importDate,
                 endDate: importDate,
                 country: '',
-                accommodation: '',
-                notes: `Importé depuis CSV - ID: ${row.id}`
+                description: `Importé depuis CSV - ID: ${row.id}`
               };
               await addDestination(destination);
               stats.destinationsCreated++;
@@ -221,8 +218,7 @@ export default function ImportCSV() {
               startDate: importDate,
               endDate: importDate,
               country: '',
-              accommodation: '',
-              notes: `Importé depuis CSV - ID: ${row.id}`
+              description: `Importé depuis CSV - ID: ${row.id}`
             };
             await addDestination(destination);
             stats.destinationsCreated++;
@@ -247,12 +243,11 @@ export default function ImportCSV() {
             title: activityName,
             date: activityDate,
             time: '09:00',
-            duration: 120,
             category: 'sightseeing',
             description: `Importé depuis CSV`,
-            location: row.destination,
             cost: 0,
-            notes: ''
+            currency: 'EUR',
+            isCompleted: false
           };
 
           await addActivity(activity);
@@ -276,8 +271,6 @@ export default function ImportCSV() {
       }
       successParts.push(`${stats.activitiesAdded} activité(s) ajoutée(s)`);
 
-      const successMsg = `✅ Import réussi !\n${successParts.join(', ')}.`;
-
       setError(null);
       setSuccess(true);
 
@@ -294,7 +287,6 @@ export default function ImportCSV() {
   };
 
   const resetState = () => {
-    setFile(null);
     setPreview([]);
     setSelectedRows(new Set());
     setError(null);

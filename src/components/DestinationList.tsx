@@ -93,8 +93,7 @@ export default function DestinationList() {
           // Déplacer chaque activité vers la destination de destination
           for (const activity of activitiesToMove) {
             await updateActivity(activity.id, {
-              destinationId: duplicate.id,
-              location: duplicate.name
+              destinationId: duplicate.id
             });
           }
 
