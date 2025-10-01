@@ -1,15 +1,17 @@
 import { useState } from 'react';
-import { Check, X, Plus, ChevronLeft, ChevronRight, Calendar, List, Edit2, Trash2, Clock, MapPin } from 'lucide-react';
+import { Check, X, Plus, ChevronLeft, ChevronRight, Calendar, List, Edit2, Trash2, Clock, MapPin, Camera } from 'lucide-react';
 import { useTrip } from '../context/TripContext';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday, addMonths, subMonths, startOfWeek, endOfWeek } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import type { Activity } from '../types';
 import { v4 as uuidv4 } from 'uuid';
+import PhotoUpload from './PhotoUpload';
 
 export default function ActivityCalendar() {
   const { tripData, updateActivity, addActivity, deleteActivity } = useTrip();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showPhotoUpload, setShowPhotoUpload] = useState(false);
   const [selectedDayForEvents, setSelectedDayForEvents] = useState<Date | null>(null);
   const [activeTab, setActiveTab] = useState<'calendar' | 'list'>('calendar');
   const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
@@ -27,7 +29,8 @@ export default function ActivityCalendar() {
     category: 'other' as Activity['category'],
     cost: undefined as number | undefined,
     currency: 'EUR' as Activity['currency'],
-    isCompleted: false
+    isCompleted: false,
+    googleMapsUrl: ''
   });
 
   const monthStart = startOfMonth(selectedDate);
@@ -78,7 +81,8 @@ export default function ActivityCalendar() {
       category: newActivity.category,
       cost: newActivity.cost,
       currency: newActivity.currency,
-      isCompleted: false
+      isCompleted: false,
+      googleMapsUrl: newActivity.googleMapsUrl || undefined
     };
 
     try {
@@ -92,7 +96,8 @@ export default function ActivityCalendar() {
         category: 'other',
         cost: undefined,
         currency: 'EUR',
-        isCompleted: false
+        isCompleted: false,
+        googleMapsUrl: ''
       });
       setShowAddModal(false);
     } catch (error) {
@@ -120,7 +125,8 @@ export default function ActivityCalendar() {
       category: activity.category,
       cost: activity.cost,
       currency: activity.currency,
-      isCompleted: activity.isCompleted
+      isCompleted: activity.isCompleted,
+      googleMapsUrl: activity.googleMapsUrl || ''
     });
     setEditingActivity(activity);
     setShowAddModal(true);
@@ -140,7 +146,8 @@ export default function ActivityCalendar() {
         category: newActivity.category,
         cost: newActivity.cost,
         currency: newActivity.currency,
-        isCompleted: newActivity.isCompleted
+        isCompleted: newActivity.isCompleted,
+        googleMapsUrl: newActivity.googleMapsUrl || undefined
       });
       
       setNewActivity({
@@ -152,7 +159,8 @@ export default function ActivityCalendar() {
         category: 'other',
         cost: undefined,
         currency: 'EUR',
-        isCompleted: false
+        isCompleted: false,
+        googleMapsUrl: ''
       });
       setEditingActivity(null);
       setShowAddModal(false);
@@ -181,6 +189,29 @@ export default function ActivityCalendar() {
       // Si même date, trier par heure
       return (a.time || '00:00').localeCompare(b.time || '00:00');
     });
+  };
+
+  const handlePhotoAnalyzed = (analysis: any) => {
+    // Créer l'URL Google Maps si on a des coordonnées GPS
+    let googleMapsUrl = '';
+    if (analysis.latitude && analysis.longitude) {
+      googleMapsUrl = `https://www.google.com/maps?q=${analysis.latitude},${analysis.longitude}`;
+    }
+
+    setNewActivity(prev => ({
+      ...prev,
+      title: analysis.title || '',
+      description: analysis.description || '',
+      date: analysis.date || defaultDate,
+      category: analysis.category || 'other',
+      cost: analysis.estimatedPrice,
+      currency: analysis.currency || 'EUR',
+      googleMapsUrl
+    }));
+
+    // Fermer PhotoUpload et ouvrir le formulaire d'activité
+    setShowPhotoUpload(false);
+    setShowAddModal(true);
   };
 
   return (
@@ -220,6 +251,13 @@ export default function ActivityCalendar() {
           </div>
 
           <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setShowPhotoUpload(true)}
+              className="flex items-center space-x-2 bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg transition-colors text-sm font-medium"
+            >
+              <Camera className="w-4 h-4" />
+              <span className="hidden md:inline">Photo</span>
+            </button>
             <button
               onClick={() => openAddModal()}
               data-add-activity
@@ -670,6 +708,22 @@ export default function ActivityCalendar() {
                   />
                 </div>
 
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    🗺️ Lien Google Maps (optionnel)
+                  </label>
+                  <input
+                    type="url"
+                    value={newActivity.googleMapsUrl}
+                    onChange={(e) => setNewActivity({ ...newActivity, googleMapsUrl: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="https://maps.google.com/..."
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Ajoutez un lien Google Maps pour afficher ce lieu sur la carte
+                  </p>
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -779,6 +833,14 @@ export default function ActivityCalendar() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Photo Upload Modal */}
+      {showPhotoUpload && (
+        <PhotoUpload
+          onActivityCreated={handlePhotoAnalyzed}
+          onClose={() => setShowPhotoUpload(false)}
+        />
       )}
     </div>
   );

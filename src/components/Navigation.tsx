@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calendar, MapPin, PieChart, Plus, DollarSign, Moon, Sun, Sparkles } from 'lucide-react';
+import { Calendar, MapPin, PieChart, Plus, DollarSign, Moon, Sun, Sparkles, Map } from 'lucide-react';
 import { useDarkMode } from '../context/DarkModeContext';
 import Dashboard from './Dashboard';
 import DestinationList from './DestinationList';
@@ -10,8 +10,9 @@ import ExpenseTracker from './ExpenseTracker';
 import DatabaseSetup from './DatabaseSetup';
 import SyncStatus from './SyncStatus';
 import IdeasToVisit from './IdeasToVisit';
+import MapView from './MapView';
 
-type Tab = 'dashboard' | 'destinations' | 'calendar' | 'people' | 'budget' | 'expenses' | 'ideas' | 'dbtest';
+type Tab = 'dashboard' | 'destinations' | 'calendar' | 'people' | 'budget' | 'expenses' | 'ideas' | 'map' | 'dbtest';
 
 export default function Navigation() {
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
@@ -24,6 +25,7 @@ export default function Navigation() {
     { id: 'destinations' as Tab, label: 'Lieux', icon: MapPin, color: 'from-emerald-500 to-emerald-600' },
     { id: 'calendar' as Tab, label: 'Planning', icon: Calendar, color: 'from-purple-500 to-purple-600' },
     { id: 'ideas' as Tab, label: 'Idées', icon: Sparkles, color: 'from-pink-500 to-pink-600' },
+    { id: 'map' as Tab, label: 'Carte', icon: Map, color: 'from-amber-500 to-amber-600' },
     { id: 'budget' as Tab, label: 'Budget', icon: DollarSign, color: 'from-green-500 to-green-600' },
   ];
 
@@ -95,6 +97,8 @@ export default function Navigation() {
         return <ExpenseTracker />;
       case 'ideas':
         return <IdeasToVisit />;
+      case 'map':
+        return <MapView />;
       case 'dbtest':
         return <DatabaseSetup />;
       default:
@@ -352,9 +356,9 @@ export default function Navigation() {
               </button>
             </div>
 
-            {/* Onglets à droite (3 onglets) */}
+            {/* Onglets à droite (4 onglets) */}
             <div className="flex-1 flex gap-2">
-              {visibleTabs.slice(2, 5).map((tab) => {
+              {visibleTabs.slice(2, 6).map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
 

@@ -18,6 +18,7 @@ export interface Activity {
   cost?: number;
   currency: 'EUR' | 'CNY' | 'JPY';
   isCompleted: boolean;
+  googleMapsUrl?: string;
 }
 
 export interface Expense {
